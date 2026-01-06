@@ -54,7 +54,7 @@ const Programs = () => {
                 </div>
 
                 <Link
-                    href="/programs"
+                    href="https://aici-umg.com/"
                     className="text-primary font-bold border-b-2 border-primary hover:text-secondary hover:border-secondary transition-colors inline-block text-base md:text-lg"
                 >
                     Jelajahi Program
