@@ -39,15 +39,18 @@ const Stats = () => {
     ];
 
     return (
-        <section className="py-16 md:py-28 bg-white">
+        /* Mengubah padding agar lebih lebar ke bawah (pb-32 dan md:pb-60) */
+        <section className="pt-20 pb-32 md:pt-32 md:pb-60 bg-white">
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
                 {stats.map((stat, index) => (
-                    <div key={index} className="space-y-2 md:space-y-3 group transition-transform hover:scale-105">
-                        <h2 className="text-4xl md:text-6xl font-bold text-primary">
+                    <div key={index} className="space-y-4 group transition-transform hover:scale-105">
+                        <h2 className="text-5xl md:text-7xl font-bold text-primary tracking-tight">
                             <AnimatedNumber value={stat.value} />
                             <span>+</span>
                         </h2>
-                        <p className="text-lg md:text-xl text-primary/80 font-medium">{stat.label}</p>
+                        <p className="text-lg md:text-2xl text-primary/70 font-medium max-w-[200px] mx-auto leading-relaxed">
+                            {stat.label}
+                        </p>
                     </div>
                 ))}
             </div>
