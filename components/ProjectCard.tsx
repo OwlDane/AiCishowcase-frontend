@@ -11,7 +11,7 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
     return (
-        <div className="group bg-white rounded-4xl overflow-hidden border border-gray-100 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2">
+        <div className="group bg-white rounded-4xl overflow-hidden border border-gray-100 transition-all duration-500 shadow-sm">
             <Link href={`/projects/${project.id}`}>
                 <div className="relative aspect-16/10 overflow-hidden">
                     <Image

@@ -1,24 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
+import { AnimatePresence, motion } from "motion/react";
+import { useOutsideClick } from "@/hooks/use-outside-click";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { achievements, Achievement } from "@/data/achievements";
 import BackToTop from "@/components/BackToTop";
 
 export default function AchievementsPage() {
-    const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
+    const [active, setActive] = useState<Achievement | null>(null);
+    const ref = useRef<HTMLDivElement>(null!);
+    const id = useId();
 
-    // Lock scroll when modal is open
     useEffect(() => {
-        if (selectedAchievement) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
+        function onKeyDown(event: KeyboardEvent) {
+            if (event.key === "Escape") {
+                setActive(null);
+            }
         }
-        return () => { document.body.style.overflow = 'unset'; };
-    }, [selectedAchievement]);
+
+        if (active) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [active]);
+
+    useOutsideClick(ref, () => setActive(null));
 
     return (
         <main className="min-h-screen bg-gray-50/30">
@@ -27,145 +40,182 @@ export default function AchievementsPage() {
             {/* Header Section */}
             <section className="pt-40 pb-20 bg-white border-b border-gray-100">
                 <div className="max-w-7xl mx-auto px-6 text-center">
-                    <h1 className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight">
+                    <motion.h1 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight"
+                    >
                         Our <span className="text-secondary">Achievements</span>
-                    </h1>
-                    <p className="text-lg md:text-xl text-primary/60 max-w-2xl mx-auto leading-relaxed">
+                    </motion.h1>
+                    <motion.p 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-lg md:text-xl text-primary/60 max-w-2xl mx-auto leading-relaxed"
+                    >
                         Celebrating the milestones and successes of our community in the world of AI and Robotics.
-                    </p>
+                    </motion.p>
                 </div>
             </section>
 
-            {/* Achievements Grid */}
+            {/* Achievements Grid Area */}
             <section className="py-24">
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <AnimatePresence>
+                        {active && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 bg-black/30 backdrop-blur-sm h-full w-full z-100"
+                            />
+                        )}
+                    </AnimatePresence>
+
+                    <AnimatePresence>
+                        {active ? (
+                            <div className="fixed inset-0 grid place-items-center z-110 p-4">
+                                <motion.button
+                                    key={`button-${active.id}-${id}`}
+                                    layout
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0, transition: { duration: 0.05 } }}
+                                    className="flex absolute top-6 right-6 items-center justify-center bg-white rounded-full h-10 w-10 shadow-xl z-120"
+                                    onClick={() => setActive(null)}
+                                >
+                                    <CloseIcon />
+                                </motion.button>
+                                <motion.div
+                                    layoutId={`card-${active.id}-${id}`}
+                                    ref={ref}
+                                    className="w-full max-w-[600px] h-full md:h-fit md:max-h-[85%] flex flex-col bg-white rounded-[2.5rem] overflow-hidden shadow-2xl"
+                                >
+                                    <motion.div layoutId={`image-${active.id}-${id}`} className="relative h-72 md:h-80 w-full">
+                                        <Image
+                                            src={active.image}
+                                            alt={active.title}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </motion.div>
+
+                                    <div className="flex flex-col p-8 md:p-10 space-y-6 overflow-y-auto">
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between items-center">
+                                                <motion.span 
+                                                    layout
+                                                    className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                                                        active.category === "Competition" 
+                                                        ? "bg-secondary text-white" 
+                                                        : active.category === "Partnership"
+                                                        ? "bg-primary text-white"
+                                                        : "bg-gray-100 text-primary"
+                                                    }`}
+                                                >
+                                                    {active.category}
+                                                </motion.span>
+                                                <motion.span layout className="text-sm font-bold text-primary/30 uppercase tracking-widest">{active.date}</motion.span>
+                                            </div>
+                                            <motion.h3
+                                                layoutId={`title-${active.id}-${id}`}
+                                                className="text-2xl md:text-3xl font-bold text-primary leading-tight"
+                                            >
+                                                {active.title}
+                                            </motion.h3>
+                                        </div>
+
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            className="text-primary/60 text-base md:text-lg leading-relaxed font-medium"
+                                        >
+                                            {active.description}
+                                            <p className="mt-4">
+                                                This achievement represents the dedication and hard work of our students and collaborators. At AiCi, we strive to push the boundaries of what's possible in artificial intelligence and robotics.
+                                            </p>
+                                        </motion.div>
+
+                                        {active.link && (
+                                            <motion.div 
+                                                layout
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                className="pt-4"
+                                            >
+                                                <a 
+                                                    href={active.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-block bg-secondary text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-secondary/20 hover:bg-primary transition-all"
+                                                >
+                                                    Visit Source
+                                                </a>
+                                            </motion.div>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            </div>
+                        ) : null}
+                    </AnimatePresence>
+
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                         {achievements.map((achievement) => (
-                            <div 
+                            <motion.div
+                                layoutId={`card-${achievement.id}-${id}`}
                                 key={achievement.id}
-                                onClick={() => setSelectedAchievement(achievement)}
-                                className="group bg-white rounded-[3rem] overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-2 flex flex-col md:flex-row cursor-pointer"
+                                onClick={() => setActive(achievement)}
+                                className="group bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm transition-all flex flex-col md:flex-row cursor-pointer h-full"
                             >
-                                {/* image */}
-                                <div className="md:w-2/5 relative h-64 md:h-auto overflow-hidden">
+                                <motion.div layoutId={`image-${achievement.id}-${id}`} className="md:w-2/5 relative h-64 md:h-auto overflow-hidden">
                                     <Image
                                         src={achievement.image}
                                         alt={achievement.title}
                                         fill
-                                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
                                         sizes="(max-width: 768px) 100vw, 40vw"
                                     />
-                                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                </div>
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                </motion.div>
 
-                                {/* Content */}
-                                <div className="md:w-3/5 p-10 space-y-6 flex flex-col justify-center">
-                                    <div className="space-y-3">
-                                        <div className="flex justify-between items-center">
-                                            <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${
-                                                achievement.category === "Competition" 
-                                                ? "bg-secondary text-white" 
-                                                : achievement.category === "Partnership"
-                                                ? "bg-primary text-white"
-                                                : "bg-gray-100 text-primary"
-                                            }`}>
-                                                {achievement.category}
-                                            </span>
-                                            <span className="text-sm font-bold text-primary/30 uppercase tracking-widest">{achievement.date}</span>
-                                        </div>
-                                        <h3 className="text-2xl font-bold text-primary group-hover:text-secondary transition-colors leading-tight">
-                                            {achievement.title}
-                                        </h3>
+                                <div className="md:w-3/5 p-8 flex flex-col justify-center space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                            achievement.category === "Competition" 
+                                            ? "bg-secondary text-white" 
+                                            : achievement.category === "Partnership"
+                                            ? "bg-primary text-white"
+                                            : "bg-gray-100 text-primary"
+                                        }`}>
+                                            {achievement.category}
+                                        </span>
+                                        <span className="text-[10px] font-bold text-primary/30 uppercase tracking-widest">{achievement.date}</span>
                                     </div>
-                                    <p className="text-primary/60 text-base leading-relaxed line-clamp-2">
+                                    <motion.h3 
+                                        layoutId={`title-${achievement.id}-${id}`}
+                                        className="text-xl font-bold text-primary group-hover:text-secondary transition-colors leading-tight"
+                                    >
+                                        {achievement.title}
+                                    </motion.h3>
+                                    <motion.p 
+                                        layoutId={`description-${achievement.id}-${id}`}
+                                        className="text-primary/60 text-sm leading-relaxed line-clamp-2"
+                                    >
                                         {achievement.description}
-                                    </p>
-                                    
-                                    <div className="inline-flex items-center gap-2 text-secondary font-bold group/link">
+                                    </motion.p>
+                                    <div className="inline-flex items-center gap-2 text-secondary text-sm font-bold pt-2">
                                         View Details
-                                        <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                         </svg>
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
-                    </div>
+                    </ul>
                 </div>
             </section>
-
-            {/* Modal Popup */}
-            {selectedAchievement && (
-                <div className="fixed inset-0 z-100 flex items-center justify-center px-6">
-                    <div 
-                        className="absolute inset-0 bg-primary/40 backdrop-blur-md transition-opacity"
-                        onClick={() => setSelectedAchievement(null)}
-                    />
-                    
-                    <div className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row animate-in fade-in zoom-in duration-300">
-                        {/* Close Button */}
-                        <button 
-                            onClick={() => setSelectedAchievement(null)}
-                            className="absolute top-6 right-6 z-10 w-10 h-10 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white rounded-full flex items-center justify-center transition-all"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-
-                        {/* Image */}
-                        <div className="md:w-1/2 relative min-h-[300px]">
-                            <Image
-                                src={selectedAchievement.image}
-                                alt={selectedAchievement.title}
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-
-                        {/* Content */}
-                        <div className="md:w-1/2 p-10 md:p-14 overflow-y-auto space-y-8">
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <span className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-wider ${
-                                        selectedAchievement.category === "Competition" 
-                                        ? "bg-secondary text-white" 
-                                        : selectedAchievement.category === "Partnership"
-                                        ? "bg-primary text-white"
-                                        : "bg-gray-100 text-primary"
-                                    }`}>
-                                        {selectedAchievement.category}
-                                    </span>
-                                    <span className="text-sm font-bold text-primary/30 uppercase tracking-widest">{selectedAchievement.date}</span>
-                                </div>
-                                <h3 className="text-3xl md:text-4xl font-bold text-primary leading-tight">
-                                    {selectedAchievement.title}
-                                </h3>
-                            </div>
-
-                            <div className="prose prose-lg text-primary/60 leading-relaxed font-medium">
-                                <p>{selectedAchievement.description}</p>
-                                <p className="pt-4">
-                                    This achievement represents the dedication and hard work of our students and collaborators. At AiCi, we strive to push the boundaries of what's possible in artificial intelligence and robotics.
-                                </p>
-                            </div>
-
-                            {selectedAchievement.link && (
-                                <div className="pt-6">
-                                    <a 
-                                        href={selectedAchievement.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-block bg-secondary text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-secondary/20 hover:bg-primary transition-all"
-                                    >
-                                        Visit Source
-                                    </a>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Inspiration CTA */}
             <section className="pb-32">
@@ -198,3 +248,27 @@ export default function AchievementsPage() {
         </main>
     );
 }
+
+export const CloseIcon = () => {
+    return (
+        <motion.svg
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.05 } }}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6 text-black"
+        >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M18 6l-12 12" />
+            <path d="M6 6l12 12" />
+        </motion.svg>
+    );
+};
