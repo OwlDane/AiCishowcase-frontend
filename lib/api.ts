@@ -86,6 +86,15 @@ export const api = {
         list: (params?: string) => fetcher<PaginatedResponse<BackendProject>>(`/showcase/projects/${params ? `?${params}` : ''}`),
         get: (id: string) => fetcher<BackendProject>(`/showcase/projects/${id}/`),
         categories: () => fetcher<PaginatedResponse<BackendCategory>>('/showcase/categories/'),
+        createCategory: (data: any) => fetcher<BackendCategory>('/showcase/categories/', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+        updateCategory: (id: string, data: any) => fetcher<BackendCategory>(`/showcase/categories/${id}/`, {
+            method: 'PATCH',
+            body: JSON.stringify(data),
+        }),
+        deleteCategory: (id: string) => fetcher<any>(`/showcase/categories/${id}/`, { method: 'DELETE' }),
         // Admin actions
         listAll: (params?: string) => fetcher<PaginatedResponse<BackendProject>>(`/showcase/projects/${params ? `?${params}` : ''}`),
         approve: (id: string) => fetcher<any>(`/showcase/projects/${id}/approve/`, { method: 'POST' }),
