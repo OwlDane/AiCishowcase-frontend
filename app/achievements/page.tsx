@@ -8,6 +8,25 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import { api, BackendAchievement } from "@/lib/api";
+import { Skeleton } from "@/components/Skeleton";
+
+const AchievementCardSkeleton = () => (
+    <div className="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm flex flex-col md:flex-row h-full animate-pulse">
+        <Skeleton className="md:w-2/5 h-64 md:h-auto rounded-none w-full" />
+        <div className="md:w-3/5 p-8 flex flex-col justify-center space-y-4">
+            <div className="flex justify-between items-center">
+                <Skeleton className="h-6 w-24 rounded-full" />
+                <Skeleton className="h-4 w-20" />
+            </div>
+            <Skeleton className="h-8 w-3/4" />
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+            </div>
+            <Skeleton className="h-4 w-24 mt-4" />
+        </div>
+    </div>
+);
 
 export default function AchievementsPage() {
     const [achievements, setAchievements] = useState<BackendAchievement[]>([]);
@@ -179,7 +198,7 @@ export default function AchievementsPage() {
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                         {isLoading ? (
                             [1, 2, 3, 4].map((n) => (
-                                <div key={n} className="bg-white rounded-[2.5rem] h-64 animate-pulse border border-gray-100 shadow-sm" />
+                                <AchievementCardSkeleton key={n} />
                             ))
                         ) : (
                             achievements.map((achievement) => (

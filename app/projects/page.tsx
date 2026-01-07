@@ -6,6 +6,28 @@ import Footer from "@/components/Footer";
 import ProjectCard from "@/components/ProjectCard";
 import BackToTop from "@/components/BackToTop";
 import { api, BackendProject } from "@/lib/api";
+import { Skeleton } from "@/components/Skeleton";
+
+const ProjectCardSkeleton = () => (
+    <div className="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full animate-pulse">
+        <Skeleton className="aspect-16/10 rounded-none w-full" />
+        <div className="p-8 space-y-4 flex-1 flex flex-col">
+            <div className="flex justify-between items-start gap-4">
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-5 w-12 rounded-full" />
+            </div>
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+            <div className="pt-4 mt-auto flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                    <Skeleton className="w-8 h-8 rounded-full" />
+                    <Skeleton className="h-4 w-24" />
+                </div>
+                <Skeleton className="h-4 w-12" />
+            </div>
+        </div>
+    </div>
+);
 
 export default function ProjectsPage() {
     const [projects, setProjects] = useState<BackendProject[]>([]);
@@ -60,18 +82,27 @@ export default function ProjectsPage() {
                 <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
                     {/* Categories */}
                     <div className="flex flex-wrap justify-center gap-3">
-                        {categories.map((category) => (
-                            <button
-                                key={category}
-                                onClick={() => setSelectedCategory(category)}
-                                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${selectedCategory === category
-                                        ? "bg-primary text-white shadow-lg shadow-primary/20"
-                                        : "bg-primary/5 text-primary hover:bg-primary/10"
-                                    }`}
-                            >
-                                {category}
-                            </button>
-                        ))}
+                        {isLoading ? (
+                            <>
+                                <div className="px-6 py-2.5 rounded-full bg-primary text-white font-bold text-sm">All</div>
+                                {[1, 2, 3].map((n) => (
+                                    <Skeleton key={n} className="w-24 h-10 rounded-full" />
+                                ))}
+                            </>
+                        ) : (
+                            categories.map((category) => (
+                                <button
+                                    key={category}
+                                    onClick={() => setSelectedCategory(category)}
+                                    className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${selectedCategory === category
+                                            ? "bg-primary text-white shadow-lg shadow-primary/20"
+                                            : "bg-primary/5 text-primary hover:bg-primary/10"
+                                        }`}
+                                >
+                                    {category}
+                                </button>
+                            ))
+                        )}
                     </div>
 
                     {/* Search */}
@@ -100,8 +131,8 @@ export default function ProjectsPage() {
                 <div className="max-w-7xl mx-auto px-6">
                     {isLoading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                            {[1, 2, 3].map((n) => (
-                                <div key={n} className="bg-white rounded-4xl h-96 animate-pulse border border-gray-100" />
+                            {[1, 2, 3, 4, 5, 6].map((n) => (
+                                <ProjectCardSkeleton key={n} />
                             ))}
                         </div>
                     ) : filteredProjects.length > 0 ? (
