@@ -95,11 +95,14 @@ export default function AdminProjectsPage() {
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {isLoading ? (
-                                [1, 2, 3, 4, 5].map(n => (
-                                    <tr key={n}>
-                                        <td colSpan={4} className="px-10 py-8 animate-pulse text-center text-primary/20 font-bold">Loading submission data...</td>
-                                    </tr>
-                                ))
+                                <tr>
+                                    <td colSpan={4} className="px-10 py-16 text-center">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <div className="w-8 h-8 border-4 border-primary/10 border-t-primary rounded-full animate-spin" />
+                                            <p className="text-primary/40 font-bold uppercase tracking-widest text-[10px] animate-pulse">Loading submission data...</p>
+                                        </div>
+                                    </td>
+                                </tr>
                             ) : projects.length === 0 ? (
                                 <tr>
                                     <td colSpan={4} className="px-10 py-20 text-center">

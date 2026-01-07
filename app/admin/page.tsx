@@ -43,10 +43,46 @@ export default function AdminDashboard() {
     }, []);
 
     const statCards = [
-        { name: "Total Projects", value: stats.totalProjects, icon: "📁", color: "bg-blue-500" },
-        { name: "Pending Approval", value: stats.pendingProjects, icon: "⏳", color: "bg-amber-500" },
-        { name: "Total Likes", value: stats.totalLikes, icon: "❤️", color: "bg-rose-500" },
-        { name: "Achievements", value: stats.totalAchievements, icon: "🏆", color: "bg-emerald-500" },
+        { 
+            name: "Total Projects", 
+            value: stats.totalProjects, 
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                </svg>
+            ), 
+            color: "bg-blue-500" 
+        },
+        { 
+            name: "Pending Approval", 
+            value: stats.pendingProjects, 
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            ), 
+            color: "bg-amber-500" 
+        },
+        { 
+            name: "Total Likes", 
+            value: stats.totalLikes, 
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            ), 
+            color: "bg-rose-500" 
+        },
+        { 
+            name: "Achievements", 
+            value: stats.totalAchievements, 
+            icon: (
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+            ), 
+            color: "bg-emerald-500" 
+        },
     ];
 
     return (
@@ -130,12 +166,20 @@ export default function AdminDashboard() {
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700" />
                         <h4 className="text-lg font-bold mb-4 relative z-10">Quick Actions</h4>
                         <div className="grid grid-cols-2 gap-4 relative z-10">
-                            <Link href="/admin/achievements/new" className="bg-white/10 hover:bg-white/20 p-4 rounded-2xl flex flex-col gap-2 transition-all">
-                                <span className="text-2xl">✨</span>
+                            <Link href="/admin/achievements" className="bg-white/10 hover:bg-white/20 p-6 rounded-2xl flex flex-col gap-3 transition-all group/btn">
+                                <div className="p-2 w-10 h-10 bg-white/10 rounded-xl group-hover/btn:bg-white/20 transition-colors">
+                                    <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
+                                    </svg>
+                                </div>
                                 <span className="text-xs font-bold uppercase tracking-wider">Add Achievement</span>
                             </Link>
-                            <Link href="/admin/categories" className="bg-white/10 hover:bg-white/20 p-4 rounded-2xl flex flex-col gap-2 transition-all">
-                                <span className="text-2xl">📁</span>
+                            <Link href="/admin/categories" className="bg-white/10 hover:bg-white/20 p-6 rounded-2xl flex flex-col gap-3 transition-all group/btn">
+                                <div className="p-2 w-10 h-10 bg-white/10 rounded-xl group-hover/btn:bg-white/20 transition-colors">
+                                    <svg className="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
                                 <span className="text-xs font-bold uppercase tracking-wider">New Category</span>
                             </Link>
                         </div>

@@ -109,7 +109,7 @@ export default function AdminAchievementsPage() {
                 <h3 className="text-xl font-bold text-primary">Milestones & Recognitions</h3>
                 <button 
                     onClick={() => openModal()}
-                    className="bg-secondary text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-secondary/20 hover:bg-primary transition-all flex items-center gap-2"
+                    className="bg-primary text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-secondary transition-all flex items-center gap-2"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v8m0 0v8m0-8h8m-8 0H4" />
