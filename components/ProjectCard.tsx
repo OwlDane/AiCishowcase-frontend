@@ -21,7 +21,9 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
     const projectYear = isBackend ? new Date((project as BackendProject).created_at).getFullYear() : (project as Project).year;
     
     // Team member logic
-    const studentName = isBackend ? (project as BackendProject).student.full_name : "";
+    const studentName = isBackend 
+        ? ((project as BackendProject).student?.full_name || (project as BackendProject).student_name || "Unknown") 
+        : "";
     const mockTeam = !isBackend ? (project as Project).team : [];
     const initials = (name: string) => name.split(' ').map(n => n[0]).join('');
 

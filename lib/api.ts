@@ -14,14 +14,14 @@ export interface BackendStudent {
 
 export interface BackendProject {
     id: string;
-    student: BackendStudent;
+    student?: BackendStudent;
+    student_name?: string;
     category: string;
     category_name: string;
     title: string;
     description: string;
     thumbnail: string;
     likes_count: number;
-    github_url?: string;
     demo_url?: string;
     video_url?: string;
     created_at: string;
@@ -100,6 +100,13 @@ export const api = {
         approve: (id: string) => fetcher<any>(`/showcase/projects/${id}/approve/`, { method: 'POST' }),
         reject: (id: string) => fetcher<any>(`/showcase/projects/${id}/reject/`, { method: 'POST' }),
         delete: (id: string) => fetcher<any>(`/showcase/projects/${id}/`, { method: 'DELETE' }),
+        create: (data: FormData) => fetcher<BackendProject>('/showcase/projects/', {
+            method: 'POST',
+            body: data,
+        }),
+    },
+    users: {
+        listStudents: (params?: string) => fetcher<PaginatedResponse<BackendStudent>>(`/users/students/${params ? `?${params}` : ''}`),
     },
     achievements: {
         list: () => fetcher<PaginatedResponse<BackendAchievement>>('/achievements/'),

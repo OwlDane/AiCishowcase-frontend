@@ -46,7 +46,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
     const projectImage = project.thumbnail || "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1470&auto=format&fit=crop";
     const projectYear = new Date(project.created_at).getFullYear();
     const initials = (name: string) => name.split(' ').map(n => n[0]).join('');
-    const studentName = project.student.full_name;
+    const studentName = project.student?.full_name || project.student_name || "Unknown";
 
     return (
         <main className="min-h-screen bg-white">
@@ -133,12 +133,18 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
                                     Project Creator
                                 </h3>
                                 <div className="flex items-center gap-4 group">
-                                    <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center font-bold text-primary text-sm group-hover:bg-secondary group-hover:text-white transition-colors">
-                                        {initials(studentName)}
+                                    <div className="w-12 h-12 rounded-full bg-primary/5 flex items-center justify-center font-bold text-primary text-sm group-hover:bg-secondary group-hover:text-white transition-colors overflow-hidden relative">
+                                        {project.student?.photo ? (
+                                            <Image src={project.student.photo} alt="" fill className="object-cover" />
+                                        ) : (
+                                            initials(studentName)
+                                        )}
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="text-primary font-bold">{studentName}</span>
-                                        <span className="text-primary/40 text-xs">Student Researcher</span>
+                                        <span className="text-primary/40 text-xs">
+                                            {project.student?.angkatan ? `Class of ${project.student.angkatan}` : 'Project Creator'}
+                                        </span>
                                     </div>
                                 </div>
                             </div>

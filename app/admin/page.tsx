@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function AdminDashboard() {
     const [stats, setStats] = useState({
         totalProjects: 0,
-        pendingProjects: 0,
+        totalCategories: 0,
         totalLikes: 0,
         totalAchievements: 0
     });
@@ -17,9 +17,10 @@ export default function AdminDashboard() {
     useEffect(() => {
         const loadDashboardData = async () => {
             try {
-                const [projectsData, achievementsData] = await Promise.all([
+                const [projectsData, achievementsData, categoriesData] = await Promise.all([
                     api.projects.list(),
-                    api.achievements.list()
+                    api.achievements.list(),
+                    api.projects.categories()
                 ]);
 
                 // Basic stats calculation (In a real app, backend would provide a dashboard endpoint)
@@ -28,7 +29,7 @@ export default function AdminDashboard() {
                 
                 setStats({
                     totalProjects: projectsData.count,
-                    pendingProjects: projects.filter((p: any) => p.status === 'PENDING').length,
+                    totalCategories: categoriesData.count,
                     totalLikes: projects.reduce((acc: number, curr: any) => acc + (curr.likes_count || 0), 0),
                     totalAchievements: achievementsData.count
                 });
@@ -54,11 +55,11 @@ export default function AdminDashboard() {
             color: "bg-blue-500" 
         },
         { 
-            name: "Pending Approval", 
-            value: stats.pendingProjects, 
+            name: "Total Categories", 
+            value: stats.totalCategories, 
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
             ), 
             color: "bg-amber-500" 
@@ -119,7 +120,6 @@ export default function AdminDashboard() {
                                 <tr>
                                     <th className="px-10 py-5 text-[10px] font-bold text-primary/30 uppercase tracking-[0.2em]">Project</th>
                                     <th className="px-10 py-5 text-[10px] font-bold text-primary/30 uppercase tracking-[0.2em]">Student</th>
-                                    <th className="px-10 py-5 text-[10px] font-bold text-primary/30 uppercase tracking-[0.2em]">Status</th>
                                     <th className="px-10 py-5 text-[10px] font-bold text-primary/30 uppercase tracking-[0.2em]">Date</th>
                                 </tr>
                             </thead>
@@ -143,12 +143,7 @@ export default function AdminDashboard() {
                                             </div>
                                         </td>
                                         <td className="px-10 py-6">
-                                            <span className="text-primary/60 font-medium">{project.student.full_name}</span>
-                                        </td>
-                                        <td className="px-10 py-6">
-                                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${(project as any).status === 'APPROVED' ? 'bg-emerald-50 text-emerald-500' : 'bg-amber-50 text-amber-500'}`}>
-                                                {(project as any).status || 'APPROVED'}
-                                            </span>
+                                            <span className="text-primary/60 font-medium">{project.student?.full_name || project.student_name}</span>
                                         </td>
                                         <td className="px-10 py-6 text-sm text-primary/40 font-bold">
                                             {new Date(project.created_at).toLocaleDateString()}
