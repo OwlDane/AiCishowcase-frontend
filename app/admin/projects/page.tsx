@@ -138,20 +138,10 @@ export default function AdminProjectsPage() {
         <div className="space-y-8">
             <div className="flex justify-between items-center">
                 <h3 className="text-xl font-bold text-primary">Submissions Management</h3>
-                <button 
-                    onClick={() => openModal()}
-                    className="bg-primary text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-secondary transition-all flex items-center gap-2"
-                >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v8m0 0v8m0-8h8m-8 0H4" />
-                    </svg>
-                    New Project
-                </button>
             </div>
 
-            {/* Search */}
             <div className="flex flex-col md:flex-row gap-6 justify-between items-center bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100">
-                <div className="flex items-center gap-4 w-full md:w-auto">
+                <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto flex-1">
                     <div className="relative flex-1 md:w-80">
                         <input
                             type="text"
@@ -165,6 +155,16 @@ export default function AdminProjectsPage() {
                         </svg>
                     </div>
                 </div>
+                
+                <button 
+                    onClick={() => openModal()}
+                    className="bg-primary text-white font-bold px-8 py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-secondary transition-all flex items-center gap-2 shrink-0 h-full"
+                >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v8m0 0v8m0-8h8m-8 0H4" />
+                    </svg>
+                    New Project
+                </button>
             </div>
 
             {/* Projects Table */}
