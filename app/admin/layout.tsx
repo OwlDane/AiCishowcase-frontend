@@ -8,6 +8,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const router = useRouter();
     const pathname = usePathname();
     const [isChecking, setIsChecking] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     useEffect(() => {
         // Skip check for login page itself
@@ -39,16 +40,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     return (
         <div className="bg-gray-50 min-h-screen">
-            <AdminSidebar />
-            <div className="ml-80">
+            <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+            <div className={`transition-all duration-500 ease-in-out ${isSidebarOpen ? "ml-80" : "ml-24"}`}>
                 {/* Admin Header / Topbar */}
                 <header className="h-24 px-12 flex items-center justify-between sticky top-0 bg-gray-50/80 backdrop-blur-md z-30">
-                    <h2 className="text-2xl font-bold text-primary tracking-tight">
-                        {pathname === "/admin" ? "Overview" : 
-                         pathname.includes("/projects") ? "Manage Projects" :
-                         pathname.includes("/achievements") ? "Manage Achievements" :
-                         pathname.includes("/categories") ? "Categories" : "Admin Console"}
-                    </h2>
+                    <div className="flex items-center gap-6">
+                        <h2 className="text-2xl font-bold text-primary tracking-tight">
+                            {pathname === "/admin" ? "Overview" : 
+                            pathname.includes("/projects") ? "Manage Projects" :
+                            pathname.includes("/achievements") ? "Manage Achievements" :
+                            pathname.includes("/categories") ? "Categories" : "Admin Console"}
+                        </h2>
+                    </div>
                     <div className="flex items-center gap-6">
                         <button className="relative w-12 h-12 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-primary/40 hover:text-secondary hover:border-secondary transition-all group">
                             <span className="absolute top-3 right-3 w-2 h-2 bg-secondary rounded-full border-2 border-white" />
