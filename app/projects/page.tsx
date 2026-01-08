@@ -31,7 +31,7 @@ const ProjectCardSkeleton = () => (
 
 export default function ProjectsPage() {
     const [projects, setProjects] = useState<BackendProject[]>([]);
-    const [categories, setCategories] = useState<string[]>(["All"]);
+    const [categories, setCategories] = useState<string[]>(["All", "Robotics", "Artificial Intelligence", "Smart City"]);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +44,11 @@ export default function ProjectsPage() {
                     api.projects.categories(),
                 ]);
                 setProjects(projectsData.results);
-                setCategories(["All", ...categoriesData.results.map((c: any) => c.name)]);
+                
+                // Merge static and dynamic categories, ensuring "All" is first and names are unique
+                const dynamicNames = categoriesData.results.map((c: any) => c.name);
+                const combined = Array.from(new Set(["All", "Robotics", "Artificial Intelligence", "Smart City", ...dynamicNames]));
+                setCategories(combined);
             } catch (error) {
                 console.error("Failed to fetch data:", error);
             } finally {
@@ -82,27 +86,18 @@ export default function ProjectsPage() {
                 <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
                     {/* Categories */}
                     <div className="flex flex-wrap justify-center gap-3">
-                        {isLoading ? (
-                            <>
-                                <div className="px-6 py-2.5 rounded-full bg-primary text-white font-bold text-sm">All</div>
-                                {[1, 2, 3].map((n) => (
-                                    <Skeleton key={n} className="w-24 h-10 rounded-full" />
-                                ))}
-                            </>
-                        ) : (
-                            categories.map((category) => (
-                                <button
-                                    key={category}
-                                    onClick={() => setSelectedCategory(category)}
-                                    className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${selectedCategory === category
-                                            ? "bg-primary text-white shadow-lg shadow-primary/20"
-                                            : "bg-primary/5 text-primary hover:bg-primary/10"
-                                        }`}
-                                >
-                                    {category}
-                                </button>
-                            ))
-                        )}
+                        {categories.map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => setSelectedCategory(category)}
+                                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${selectedCategory === category
+                                        ? "bg-primary text-white shadow-lg shadow-primary/20"
+                                        : "bg-primary/5 text-primary hover:bg-primary/10"
+                                    }`}
+                            >
+                                {category}
+                            </button>
+                        ))}
                     </div>
 
                     {/* Search */}

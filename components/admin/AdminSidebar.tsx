@@ -43,8 +43,15 @@ export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
             try {
                 const data = await api.auth.me();
                 setUser(data);
-            } catch (err) {
+            } catch (err: any) {
                 console.error("Failed to fetch user:", err);
+                // If we get a 401 even after the fetcher's refresh attempt, logout
+                if (err.message === "API request failed" || err.message?.includes("401")) {
+                    // Only redirect if we're not already on the login page
+                    if (typeof window !== 'undefined' && !window.location.pathname.includes('/admin/login')) {
+                        logout();
+                    }
+                }
             }
         };
         fetchUser();
