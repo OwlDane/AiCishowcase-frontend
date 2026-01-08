@@ -145,8 +145,12 @@ export async function fetcher<T>(endpoint: string, options?: RequestInit): Promi
     }
 
     if (!res.ok) {
-        const error = await res.json().catch(() => ({ message: 'An error occurred' }));
-        throw new Error(error.message || 'API request failed');
+        const error = await res.json().catch(() => ({}));
+        const errorMessage = error.detail || error.message || 'API request failed';
+        const err = new Error(errorMessage) as any;
+        err.status = res.status;
+        err.data = error;
+        throw err;
     }
 
     if (res.status === 204) {
