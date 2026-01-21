@@ -32,7 +32,7 @@ const Hero = () => {
     }, []);
 
     return (
-        <section className="relative min-h-[60vh] flex items-center pt-44 pb-12 bg-[#004e66] overflow-hidden">
+        <section className="relative min-h-[60vh] flex items-center pt-44 pb-12 bg-[#0B6282] overflow-hidden">
             {/* Background decorative patterns (optional, matching image look) */}
             <div className="absolute top-0 right-0 w-1/3 h-full opacity-10 pointer-events-none">
                 <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-white rounded-full blur-[100px]" />
@@ -42,7 +42,7 @@ const Hero = () => {
                 <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
                     {/* Left Column: Text */}
                     <div className="lg:w-1/2 text-white">
-                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold font-primary leading-[1.1] mb-6">
+                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-semibold font-primary leading-[1.1] mb-6">
                             Artificial<br />
                             Intelligence<br />
                             Center Indonesia

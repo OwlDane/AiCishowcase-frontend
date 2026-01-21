@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     icon: "/aici-logo-otak.png",
   },
   manifest: "/manifest.json",
+};
+
+export const viewport = {
   themeColor: "#255D74",
 };
 

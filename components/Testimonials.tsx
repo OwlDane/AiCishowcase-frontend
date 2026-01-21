@@ -50,10 +50,10 @@ const Testimonials = () => {
             <div className="max-w-7xl mx-auto px-6">
                 {/* Section Header */}
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-[#004e66] mb-3">
+                    <h2 className="text-3xl md:text-4xl font-semibold text-[#0B6282] mb-3">
                         Testimonials
                     </h2>
-                    <p className="text-[#004e66] text-lg md:text-xl font-medium opacity-80">
+                    <p className="text-[#0B6282] text-lg md:text-xl font-medium opacity-80">
                         What Do They Think After Studying At AiCI?
                     </p>
                 </div>
@@ -63,7 +63,7 @@ const Testimonials = () => {
                     {testimonials.map((testimonial, index) => (
                         <div
                             key={index}
-                            className="flex flex-col items-center group"
+                            className="flex flex-col items-center group hover:-translate-y-2 hover:shadow-2xl hover:bg-white rounded-3xl p-6 transition-all duration-300"
                         >
                             {/* Photo Container with bottom curve */}
                             <div className="relative w-full max-w-[400px] aspect-square mb-6">
@@ -72,7 +72,7 @@ const Testimonials = () => {
                                         src={testimonial.photo}
                                         alt={testimonial.name}
                                         fill
-                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                        className="object-cover"
                                         sizes="(max-width: 768px) 100vw, 400px"
                                     />
                                     {/* Bottom Curve Overlay */}
@@ -83,7 +83,7 @@ const Testimonials = () => {
                                 
                                 {/* Role Label (Overlapping the curve) */}
                                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10">
-                                    <div className="bg-white px-8 py-2 rounded-full border border-gray-200/50 shadow-sm text-sm font-medium text-gray-800">
+                                    <div className="bg-white px-8 py-2 rounded-full border border-gray-200/50 shadow-sm text-sm font-normal text-gray-800">
                                         {testimonial.role}
                                     </div>
                                 </div>
@@ -91,10 +91,10 @@ const Testimonials = () => {
 
                             {/* Name & Quote */}
                             <div className="text-center mt-4">
-                                <h3 className="text-2xl md:text-3xl font-bold text-[#004e66] mb-3">
+                                <h3 className="text-2xl md:text-3xl font-semibold text-[#0B6282] mb-3">
                                     {testimonial.name}
                                 </h3>
-                                <p className="text-[#004e66] text-sm md:text-base italic max-w-xs mx-auto leading-relaxed">
+                                <p className="text-[#0B6282] text-sm md:text-base italic max-w-xs mx-auto leading-relaxed">
                                     "{testimonial.quote}"
                                 </p>
                             </div>

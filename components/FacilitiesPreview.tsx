@@ -46,12 +46,12 @@ const facilities = [
 
 const FacilitiesPreview = () => {
     return (
-        <section className="py-24 bg-[#004e66] text-white overflow-hidden">
+        <section className="py-24 bg-[#0B6282] text-white overflow-hidden">
             <div className="max-w-7xl mx-auto px-6">
                 <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     {/* Left Column: Text */}
                     <div className="lg:w-1/2">
-                        <h2 className="text-4xl md:text-6xl font-bold font-primary leading-tight mb-8">
+                        <h2 className="text-6xl md:text-6xl font-semibold font-primary leading-tight mb-6">
                             Fasilitas yang<br />
                             disediakan
                         </h2>

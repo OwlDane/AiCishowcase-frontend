@@ -57,9 +57,9 @@ const Navbar = () => {
                     <Image
                         src="/aici-logo.png"
                         alt="AiCi Logo"
-                        width={180}
-                        height={60}
-                        className="h-12 md:h-14 w-auto object-contain"
+                        width={220}
+                        height={80}
+                        className="h-16 md:h-20 w-auto object-contain"
                     />
                 </Link>
 

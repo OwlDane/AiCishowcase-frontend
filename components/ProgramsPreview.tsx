@@ -47,7 +47,7 @@ const ProgramsPreview = () => {
                     {programs.map((program, index) => (
                         <div
                             key={index}
-                            className="bg-[#004e66] text-white p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 group"
+                            className="bg-[#0B6282] text-white p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 group"
                         >
                             {/* Vertical Bar Icon */}
                             <div className="flex gap-1 mb-4">
@@ -56,7 +56,7 @@ const ProgramsPreview = () => {
                                 <div className="w-1.5 h-6 bg-white rounded-full mt-3" />
                             </div>
                             
-                            <h3 className="text-lg font-bold mb-4 min-h-10 leading-tight">
+                            <h3 className="text-lg font-semibold mb-4 min-h-10 leading-tight">
                                 {program.title}
                             </h3>
                             <p className="text-white/80 text-[13px] leading-relaxed line-clamp-6">
