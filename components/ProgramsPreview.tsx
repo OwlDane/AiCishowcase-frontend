@@ -14,88 +14,66 @@ import Link from "next/link";
  * - Tambah/kurangi items di array `programs`
  */
 
+// This comment is added to trigger a re-render if the file is being watched by a development server.
 const programs = [
     {
-        icon: "🎓",
-        title: "Fun Learning with AI",
-        description: "Kegiatan belajar AI yang menyenangkan untuk siswa SD/MI, SMP/MTs dan SMA/MA/SMK dengan tutor dari Universitas Indonesia.",
-        color: "bg-primary",
+        title: "Fun Learning With AI Untuk Siswa SD/MI, SMP/MTs Dan SMA/MA/SMK",
+        description: "Kegiatan belajar yang diselenggarakan oleh AiCi bertujuan untuk memperkenalkan dan meningkatkan pengetahuan serta keterampilan peserta didik dalam bidang Artificial Intelligence ...",
     },
     {
-        icon: "🤖",
-        title: "Extracurricular AI Club",
-        description: "AiCI membuka ekstrakurikuler AI dan Robotik di sekolah-sekolah dengan modul pembelajaran sesuai tingkatan.",
-        color: "bg-primary",
+        title: "AI For Education",
+        description: "Kegiatan pelatihan implementasi AI dalam bidang pendidikan untuk Guru dan Dosen. Bertujuan untuk meningkatkan pengetahuan, keterampilan, serta melatih kemampuan guru dan dosen dalam mengembangkan pembelajaran artificial intelligence ...",
     },
     {
-        icon: "📅",
         title: "AI Day",
-        description: "Kegiatan satu hari untuk menumbuhkan minat dan pengetahuan peserta didik dalam bidang AI dengan cara yang menyenangkan.",
-        color: "bg-primary",
+        description: "AI Day merupakan sebuah kegiatan yang dilaksanakan selama satu hari dengan tujuan untuk menumbuhkan minat, pengetahuan, dan keterampilan peserta didik dalam bidang artificial intelligence dengan cara yang menyenangkan (fun learning) ...",
     },
     {
-        icon: "🎪",
         title: "AI Edu Fair",
-        description: "Kegiatan pelatihan perakitan robot, pembuatan program dan mini competition untuk memicu ketertarikan pada AI.",
-        color: "bg-primary",
+        description: "Sebuah kegiatan yang dilaksanakan selama satu hari dengan tujuan untuk menumbuhkan rasa ingin tahu, pengetahuan, dan keterampilan peserta didik dalam bidang artificial intelligence. Selain itu, pada kegiatan ini dikembangkan juga beberapa soft skills ...",
     },
     {
-        icon: "🎯",
-        title: "AI Talents Program",
-        description: "Program Studi Independen Bersertifikat Kampus Merdeka bekerjasama dengan FMIPA UI selama 5 bulan.",
-        color: "bg-primary",
-    },
-    {
-        icon: "💼",
-        title: "Digital Marketing",
-        description: "Layanan agensi untuk membantu perusahaan dalam memanfaatkan Google Ads, Landing Page, Website dan SEO.",
-        color: "bg-primary",
+        title: "Preparing Artificial Intelligence (AI) Talents",
+        description: "Merupakan program PT Artifisial Intelegensia Indonesia (AiCi) bekerjasama dengan Departemen Fisika FMIPA UI dan beberapa praktisi dalam lingkungan kerja start-up dan industri dalam bentuk Studi Independen Bersertifikat Kampus Merdeka ...",
     },
 ];
 
 const ProgramsPreview = () => {
+    /* Updated styling for cards */
     return (
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-[#eef2f5]">
             <div className="max-w-7xl mx-auto px-6">
-                {/* Section Header */}
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-                        Program Kami
-                    </h2>
-                    <p className="text-primary/60 max-w-2xl mx-auto">
-                        Berbagai program pengembangan keterampilan AI dan Robotika untuk semua tingkatan.
-                    </p>
-                </div>
-
-                {/* Programs Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {programs.map((program, index) => (
                         <div
                             key={index}
-                            className={`${program.color} text-white p-8 rounded-3xl hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 group`}
+                            className="bg-[#004e66] text-white p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 group"
                         >
-                            <div className="text-4xl mb-4">{program.icon}</div>
-                            <h3 className="text-xl font-bold mb-3 group-hover:text-secondary transition-colors">
+                            {/* Vertical Bar Icon */}
+                            <div className="flex gap-1 mb-4">
+                                <div className="w-1.5 h-6 bg-[#f03023] rounded-full" />
+                                <div className="w-1.5 h-6 bg-yellow-400 rounded-full mt-1.5" />
+                                <div className="w-1.5 h-6 bg-white rounded-full mt-3" />
+                            </div>
+                            
+                            <h3 className="text-lg font-bold mb-4 min-h-10 leading-tight">
                                 {program.title}
                             </h3>
-                            <p className="text-white/80 text-sm leading-relaxed">
+                            <p className="text-white/80 text-[13px] leading-relaxed line-clamp-6">
                                 {program.description}
                             </p>
                         </div>
                     ))}
-                </div>
 
-                {/* CTA Link */}
-                <div className="text-center mt-12">
-                    <Link
-                        href="/program"
-                        className="inline-flex items-center gap-2 text-secondary font-bold hover:underline"
-                    >
-                        Lihat Semua Program
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                    </Link>
+                    {/* Button Card (Slot 6) */}
+                    <div className="flex items-center justify-center p-6">
+                        <Link
+                            href="/program"
+                            className="bg-[#f03023] text-white px-10 py-5 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-[#d42a1e] transition-all shadow-xl text-center w-full max-w-[280px]"
+                        >
+                            DETAIL PROGRAM
+                        </Link>
+                    </div>
                 </div>
             </div>
         </section>

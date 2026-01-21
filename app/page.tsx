@@ -18,7 +18,7 @@ import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import Hero from "@/components/Hero";
 import ProgramsPreview from "@/components/ProgramsPreview";
-import PhotoGallery from "@/components/PhotoGallery";
+import HomeMedia from "@/components/HomeMedia";
 import FacilitiesPreview from "@/components/FacilitiesPreview";
 import Testimonials from "@/components/Testimonials";
 import Partners from "@/components/Partners";
@@ -27,10 +27,11 @@ import MapSection from "@/components/MapSection";
 export default function Home() {
     return (
         <main className="min-h-screen">
+            {/* Main Homepage Entry */}
             <Navbar />
             <Hero />
             <ProgramsPreview />
-            <PhotoGallery />
+            <HomeMedia />
             <FacilitiesPreview />
             <Testimonials />
             <Partners />

@@ -46,55 +46,42 @@ const facilities = [
 
 const FacilitiesPreview = () => {
     return (
-        <section className="py-20 bg-linear-to-b from-primary to-primary/90 text-white">
+        <section className="py-24 bg-[#004e66] text-white overflow-hidden">
             <div className="max-w-7xl mx-auto px-6">
-                {/* Section Header */}
-                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-16">
-                    <div>
-                        <h2 className="text-3xl md:text-5xl font-bold mb-4">
-                            Fasilitas yang<br />disediakan
+                <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                    {/* Left Column: Text */}
+                    <div className="lg:w-1/2">
+                        <h2 className="text-4xl md:text-6xl font-bold font-primary leading-tight mb-8">
+                            Fasilitas yang<br />
+                            disediakan
                         </h2>
-                        <p className="text-white/70 max-w-xl">
-                            AiCI menyediakan berbagai fasilitas pembelajaran yang lengkap untuk mendukung pengalaman belajar AI dan Robotika.
+                        
+                        <p className="text-base md:text-lg text-white/90 leading-relaxed mb-10 max-w-xl">
+                            Untuk Mendukung Kegiatan Di AiCI, Tersedia Fasilitas-Fasilitas Berupa Ruangan, Lab AI Sebanyak 6 Ruang, Media Pembelajaran/ Pelatihan Berupa Kit Dan Robot, Modul Pembelajaran Tingkat SD/MI, SMP/MTs Dan SMA/MA/SMK Serta Perguruan Tinggi.
                         </p>
-                    </div>
-                    <Link
-                        href="/fasilitas"
-                        className="inline-block bg-secondary text-white px-6 py-3 rounded-full font-bold hover:opacity-90 transition-all whitespace-nowrap"
-                    >
-                        SELENGKAPNYA TENTANG FASILITAS
-                    </Link>
-                </div>
 
-                {/* Facilities Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {facilities.map((facility, index) => (
-                        <div
-                            key={index}
-                            className="bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden hover:bg-white/20 transition-all group"
+                        <Link
+                            href="/fasilitas"
+                            className="inline-block bg-[#f03023] text-white px-10 py-4 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-[#d42a1e] transition-all shadow-xl"
                         >
-                            <div className="relative aspect-video">
+                            SELENGKAPNYA
+                        </Link>
+                    </div>
+
+                    {/* Right Column: Featured Image */}
+                    <div className="lg:w-1/2 w-full flex justify-end">
+                        <div className="relative w-full max-w-[500px] aspect-square p-3 bg-white/20 backdrop-blur-sm rounded-[3rem] border-10 border-white shadow-2xl overflow-hidden transform rotate-2">
+                            <div className="relative w-full h-full rounded-[2.2rem] overflow-hidden bg-white">
                                 <Image
-                                    src={facility.image}
-                                    alt={facility.title}
+                                    src="https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?q=80&w=800"
+                                    alt="AiCi Facilities Module"
                                     fill
-                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                    sizes="(max-width: 768px) 100vw, 25vw"
+                                    className="object-cover"
+                                    sizes="(max-width: 1024px) 100vw, 500px"
                                 />
                             </div>
-                            <div className="p-6">
-                                <span className="text-secondary text-xs font-bold uppercase tracking-wider">
-                                    {facility.category}
-                                </span>
-                                <h3 className="text-lg font-bold mt-2 mb-2">
-                                    {facility.title}
-                                </h3>
-                                <p className="text-white/60 text-sm">
-                                    {facility.description}
-                                </p>
-                            </div>
                         </div>
-                    ))}
+                    </div>
                 </div>
             </div>
         </section>

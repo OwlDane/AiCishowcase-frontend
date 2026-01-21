@@ -26,32 +26,6 @@ const MapSection = () => {
                     referrerPolicy="no-referrer-when-downgrade"
                     className="w-full h-full"
                 />
-                
-                {/* Location Card Overlay */}
-                <div className="absolute left-4 md:left-8 top-4 md:top-8 bg-white rounded-xl shadow-xl p-4 md:p-6 max-w-xs">
-                    <h3 className="font-bold text-primary text-sm md:text-base mb-2">
-                        Artificial Intelligence Center In...
-                    </h3>
-                    <p className="text-xs text-gray-500 mb-2">
-                        Gedung Lab. Riset Multidisiplin<br />
-                        FMIPA UI Lantai 4, Pondok Cina,<br />
-                        Kecamatan Beji, Kota Depok, Jawa<br />
-                        Barat 16424
-                    </p>
-                    <div className="flex items-center gap-1 text-xs">
-                        <span className="text-secondary">5.0</span>
-                        <span className="text-yellow-400">★★★★★</span>
-                        <span className="text-gray-400">16 reviews</span>
-                    </div>
-                    <a
-                        href="https://goo.gl/maps/your-directions-link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 text-xs mt-2 inline-block hover:underline"
-                    >
-                        Directions
-                    </a>
-                </div>
             </div>
         </section>
     );
