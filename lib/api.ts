@@ -98,6 +98,35 @@ export interface BackendArticle {
     created_at: string;
 }
 
+export interface BackendProgram {
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+    order: number;
+}
+
+export interface BackendSiteSettings {
+    id: string;
+    site_name: string;
+    address: string;
+    email: string;
+    phone: string;
+    whatsapp: string;
+    instagram_url: string;
+    linkedin_url: string;
+    youtube_url: string;
+    facebook_url: string;
+}
+
+export interface BackendPageContent {
+    key: string;
+    title: string;
+    content: string;
+    image: string | null;
+    updated_at: string;
+}
+
 export interface PaginatedResponse<T> {
     count: number;
     next: string | null;
@@ -117,6 +146,9 @@ const PUBLIC_ENDPOINTS = [
     '/content/team/',
     '/content/gallery/',
     '/content/articles/',
+    '/content/programs/',
+    '/content/settings/',
+    '/content/pages/',
 ];
 
 function isPublicEndpoint(endpoint: string): boolean {
@@ -285,6 +317,15 @@ export const api = {
         me: () => fetcher<any>('/users/me/'),
     },
     content: {
+        // Programs
+        programs: () => fetcher<PaginatedResponse<BackendProgram>>('/content/programs/'),
+        
+        // Site Settings (Global)
+        settings: () => fetcher<BackendSiteSettings>('/content/settings/'),
+        
+        // Page Content (Static Texts)
+        pageContent: (key?: string) => fetcher<any>(`/content/pages/${key ? `?key=${key}` : ''}`), // Returns list if key param used with filter, or check backend implementation
+        
         // Testimonials
         testimonials: () => fetcher<PaginatedResponse<BackendTestimonial>>('/content/testimonials/'),
         createTestimonial: (data: FormData) => fetcher<BackendTestimonial>('/content/testimonials/', {

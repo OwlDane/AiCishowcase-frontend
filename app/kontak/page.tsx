@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MapSection from "@/components/MapSection";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { api, BackendSiteSettings } from "@/lib/api";
 
 /**
  * Kontak Page
@@ -18,15 +20,40 @@ import Image from "next/image";
  * - Data kontak menggunakan info dari user
  */
 
-const socialLinks = [
-    { icon: "instagram", href: "https://instagram.com/aici.official", color: "bg-gradient-to-br from-purple-500 to-pink-500" },
-    { icon: "linkedin", href: "https://linkedin.com/company/aici-indonesia", color: "bg-blue-600" },
-    { icon: "email", href: "mailto:info@aici-aii.com", color: "bg-red-500" },
-    { icon: "whatsapp", href: "https://wa.me/6282110103938", color: "bg-green-500" },
-    { icon: "phone", href: "tel:+6282110103938", color: "bg-primary" },
-];
-
 export default function KontakPage() {
+    const [settings, setSettings] = useState<BackendSiteSettings | null>(null);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await api.content.settings();
+                setSettings(res);
+            } catch (err) {
+                console.error("Failed to fetch site settings", err);
+            }
+        };
+        fetchSettings();
+    }, []);
+
+    const getSocialColor = (type: string) => {
+        switch (type) {
+            case 'instagram': return "bg-gradient-to-br from-purple-500 to-pink-500";
+            case 'linkedin': return "bg-blue-600";
+            case 'email': return "bg-red-500";
+            case 'whatsapp': return "bg-green-500";
+            case 'phone': return "bg-primary";
+            default: return "bg-gray-500";
+        }
+    };
+
+    const socialLinks = settings ? [
+        { icon: "instagram", href: settings.instagram_url, color: getSocialColor('instagram') },
+        { icon: "linkedin", href: settings.linkedin_url, color: getSocialColor('linkedin') },
+        { icon: "email", href: `mailto:${settings.email}`, color: getSocialColor('email') },
+        { icon: "whatsapp", href: `https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`, color: getSocialColor('whatsapp') },
+        { icon: "phone", href: `tel:${settings.phone}`, color: getSocialColor('phone') },
+    ].filter(link => link.href && link.href !== "mailto:" && link.href !== "https://wa.me/" && link.href !== "tel:") : [];
+
     return (
         <main className="min-h-screen">
             <Navbar />
@@ -86,7 +113,7 @@ export default function KontakPage() {
                                         <div>
                                             <h3 className="text-white font-bold mb-1 text-lg">Alamat</h3>
                                             <p className="text-white/90 text-sm leading-relaxed font-medium">
-                                                Gd. Lab Riset Multidisiplin Pertamina FMIPA UI Lt. 4, Depok 16424
+                                                {settings?.address || "Gd. Lab Riset Multidisiplin Pertamina FMIPA UI Lt. 4, Depok 16424"}
                                             </p>
                                         </div>
                                     </div>
@@ -102,7 +129,7 @@ export default function KontakPage() {
                                         <div>
                                             <h3 className="text-white font-bold mb-1 text-lg">Telepon & WA</h3>
                                             <p className="text-white/90 text-sm font-medium">
-                                                0821-1010-3938 (Official)
+                                                {settings?.phone || "0821-1010-3938"} (Official)
                                             </p>
                                         </div>
                                     </div>
@@ -112,7 +139,7 @@ export default function KontakPage() {
                             {/* Social Icons */}
                             <div className="flex items-center justify-center lg:justify-start gap-4">
                                 <span className="text-white/60 text-sm font-semibold uppercase tracking-wider mr-2">Follow Us:</span>
-                                {socialLinks.map((link) => (
+                                {socialLinks.length > 0 ? socialLinks.map((link) => (
                                     <a
                                         key={link.icon}
                                         href={link.href}
@@ -122,7 +149,9 @@ export default function KontakPage() {
                                     >
                                         <SocialIcon type={link.icon} />
                                     </a>
-                                ))}
+                                )) : (
+                                     <p className="text-white/60 text-sm">Loading...</p>
+                                )}
                             </div>
                         </div>
                     </div>

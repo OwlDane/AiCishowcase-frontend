@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { api, BackendSiteSettings } from "@/lib/api";
 
 /**
  * Footer Component
@@ -16,6 +18,20 @@ import Link from "next/link";
  */
 
 const Footer = () => {
+    const [settings, setSettings] = useState<BackendSiteSettings | null>(null);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await api.content.settings();
+                setSettings(res);
+            } catch (err) {
+                console.error("Failed to fetch site settings", err);
+            }
+        };
+        fetchSettings();
+    }, []);
+
     const pageLinks = [
         { href: "/profil", label: "Profil" },
         { href: "/fasilitas", label: "Fasilitas" },
@@ -34,13 +50,14 @@ const Footer = () => {
         { href: "#", label: "AI Talents" },
     ];
 
-    const socialLinks = [
-        { href: "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.instagram.com/aici.official/%3Fhl%3Den", icon: "instagram", label: "Instagram" },
-        { href: "https://www.linkedin.com/company/artificial-intelligence-center-indonesia/?originalSubdomain=id", icon: "linkedin", label: "LinkedIn" },
-        { href: "mailto:info@aici-aii.com", icon: "email", label: "Email" },
-        { href: "https://wa.me/6282110103938", icon: "whatsapp", label: "WhatsApp" },
-        { href: "tel:+6282110103938", icon: "phone", label: "Phone" },
-    ];
+    // Build social links from settings if available
+    const socialLinks = settings ? [
+        { href: settings.instagram_url, icon: "instagram", label: "Instagram" },
+        { href: settings.linkedin_url, icon: "linkedin", label: "LinkedIn" },
+        { href: `mailto:${settings.email}`, icon: "email", label: "Email" },
+        { href: `https://wa.me/${settings.whatsapp.replace(/\D/g, '')}`, icon: "whatsapp", label: "WhatsApp" },
+        { href: `tel:${settings.phone}`, icon: "phone", label: "Phone" },
+    ].filter(link => link.href && link.href !== "mailto:" && link.href !== "https://wa.me/" && link.href !== "tel:") : [];
 
     return (
         <footer className="bg-[#0B6282] text-white">
@@ -57,9 +74,9 @@ const Footer = () => {
                             className="h-16 w-auto object-contain"
                         />
                         <div className="space-y-2 text-white/90 text-sm leading-relaxed font-semibold">
-                            <p>Artificial Intelligence Center Indonesia</p>
-                            <p>Gd. Laboratorium Riset Multidisiplin Pertamina, FMIPA UI Lt. 4, Universitas Indonesia, Depok, Jawa Barat 16424</p>
-                            <p>Phone 0821-1010-3938</p>
+                            <p>{settings?.site_name || "Artificial Intelligence Center Indonesia"}</p>
+                            <p>{settings?.address || "Gd. Laboratorium Riset Multidisiplin Pertamina, FMIPA UI Lt. 4, Universitas Indonesia, Depok, Jawa Barat 16424"}</p>
+                            <p>Phone {settings?.phone || "0821-1010-3938"}</p>
                         </div>
                     </div>
 
@@ -107,7 +124,7 @@ const Footer = () => {
                     <div className="space-y-6">
                         <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/90">Social Media</h4>
                         <div className="flex gap-3 flex-wrap">
-                            {socialLinks.map((link) => (
+                            {socialLinks.length > 0 ? socialLinks.map((link) => (
                                 <a
                                     key={link.icon}
                                     href={link.href}
@@ -118,7 +135,9 @@ const Footer = () => {
                                 >
                                     <SocialIcon type={link.icon} />
                                 </a>
-                            ))}
+                            )) : (
+                                <p className="text-white/60 text-sm">Loading...</p>
+                            )}
                         </div>
                     </div>
                 </div>
