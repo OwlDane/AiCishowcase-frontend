@@ -43,37 +43,35 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="bg-primary text-white">
+        <footer className="bg-[#0B6282] text-white">
             {/* Main Footer Content */}
             <div className="max-w-screen-2xl mx-auto px-6 py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Column 1: Logo & Address */}
                     <div className="space-y-6">
                         <Image
-                            src="/aici-logo.png"
+                            src="/Logo-Aici-White-Landscape.png"
                             alt="AiCi Logo"
-                            width={160}
-                            height={50}
-                            className="h-12 w-auto object-contain brightness-0 invert"
+                            width={240}
+                            height={80}
+                            className="h-16 w-auto object-contain"
                         />
-                        <div className="space-y-2 text-white/70 text-sm leading-relaxed">
-                            <p className="font-semibold text-white">Artificial Intelligence Center Indonesia</p>
-                            <p>Gd. Laboratorium Riset Multidisiplin Pertamina</p>
-                            <p>FMIPA UI Lt. 4, Universitas Indonesia</p>
-                            <p>Depok, Jawa Barat 16424</p>
+                        <div className="space-y-2 text-white/90 text-sm leading-relaxed font-semibold">
+                            <p>Artificial Intelligence Center Indonesia</p>
+                            <p>Gd. Laboratorium Riset Multidisiplin Pertamina, FMIPA UI Lt. 4, Universitas Indonesia, Depok, Jawa Barat 16424</p>
                             <p>Phone 0821-1010-3938</p>
                         </div>
                     </div>
 
                     {/* Column 2: Pages */}
                     <div className="space-y-6">
-                        <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">Pages</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/90">Pages</h4>
                         <ul className="space-y-3">
                             {pageLinks.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-white/70 hover:text-white transition-colors text-sm flex items-center gap-2"
+                                        className="text-white/80 hover:text-white transition-colors text-sm font-semibold flex items-center gap-2"
                                     >
                                         <svg className="w-3 h-3 text-secondary" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -87,13 +85,13 @@ const Footer = () => {
 
                     {/* Column 3: Downloads */}
                     <div className="space-y-6">
-                        <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">Download</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/90">Download</h4>
                         <ul className="space-y-3">
                             {downloadLinks.map((link) => (
                                 <li key={link.label}>
                                     <Link
                                         href={link.href}
-                                        className="text-white/70 hover:text-white transition-colors text-sm flex items-center gap-2"
+                                        className="text-white/80 hover:text-white transition-colors text-sm font-semibold flex items-center gap-2"
                                     >
                                         <svg className="w-3 h-3 text-secondary" fill="currentColor" viewBox="0 0 20 20">
                                             <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -107,7 +105,7 @@ const Footer = () => {
 
                     {/* Column 4: Social Media */}
                     <div className="space-y-6">
-                        <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">Social Media</h4>
+                        <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white/90">Social Media</h4>
                         <div className="flex gap-3 flex-wrap">
                             {socialLinks.map((link) => (
                                 <a
@@ -115,7 +113,7 @@ const Footer = () => {
                                     href={link.href}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-10 h-10 bg-white/10 hover:bg-secondary rounded-lg flex items-center justify-center transition-all"
+                                    className="w-10 h-10 bg-white/20 hover:bg-secondary rounded-lg flex items-center justify-center transition-all"
                                     aria-label={link.label}
                                 >
                                     <SocialIcon type={link.icon} />
@@ -128,7 +126,7 @@ const Footer = () => {
 
             {/* Bottom Bar */}
             <div className="border-t border-white/10">
-                <div className="max-w-screen-2xl mx-auto px-6 py-6 text-center text-white/40 text-sm">
+                <div className="max-w-screen-2xl mx-auto px-6 py-6 text-center text-white/70 text-sm font-semibold">
                     © 2026 Artificial Intelligence Center Indonesia (AiCi). All rights reserved.
                 </div>
             </div>

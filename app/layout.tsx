@@ -15,8 +15,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AiCi ShowCase",
-  description: "AiCi ShowCase - Portofolio Anak Anak Didik Artificial Intelligence Center Indonesia",
+  title: "AiCI - Artificial Intelligence Center Indonesia",
+  description: "Artificial Intelligence Center Indonesia Gd. Laboratorium Riset Multidisiplin Pertamina FMIPA UI Lt. 4, Universitas Indonesia.",
   icons: {
     icon: "/aici-logo-otak.png",
   },
