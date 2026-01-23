@@ -103,8 +103,8 @@ export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
             <div className={`mb-12 flex ${isOpen ? "items-center justify-between" : "flex-col items-center gap-6"} transition-all duration-500`}>
                 <Link href="/">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shrink-0">
-                            <span className="text-white font-black text-xl tracking-tighter">Ai</span>
+                        <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                            <img src="/icon/aici-logo-otak.png" alt="AiCi Logo" className="w-full h-full object-contain" />
                         </div>
                         {isOpen && (
                             <div className="animate-in fade-in slide-in-from-left-2 duration-300">
