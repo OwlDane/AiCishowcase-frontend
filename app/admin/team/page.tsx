@@ -3,6 +3,24 @@
 import { useState, useEffect, useRef } from "react";
 import { api, BackendTeamMember } from "@/lib/api";
 import Image from "next/image";
+import {
+    DndContext, 
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+    useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
 
 /**
  * Admin Team Page - Kelola Tim Operasional dan Tutor
@@ -12,6 +30,52 @@ const roleTypes = [
     { value: "OPERASIONAL", label: "Tim Operasional" },
     { value: "TUTOR", label: "Tutor" },
 ];
+
+function SortableMember({ id, member, onEdit, onDelete }: { id: string, member: BackendTeamMember, onEdit: any, onDelete: any }) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging
+    } = useSortable({ id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 50 : 'auto',
+        opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+        <div 
+            ref={setNodeRef} 
+            style={style} 
+            className="bg-white rounded-2xl p-6 text-center hover:shadow-lg transition-all group relative border border-transparent hover:border-secondary/20"
+        >
+            {/* Drag Handle */}
+            <button 
+                {...attributes} 
+                {...listeners}
+                className="absolute top-4 right-4 p-1.5 text-primary/20 hover:text-primary cursor-grab active:cursor-grabbing"
+            >
+                <GripVertical className="w-4 h-4" />
+            </button>
+
+            <div className="relative w-24 h-24 rounded-full overflow-hidden mx-auto mb-4 border-2 border-gray-50">
+                <Image src={member.photo} alt={member.name} fill className="object-cover" sizes="96px" />
+            </div>
+            <h3 className="font-bold text-primary truncate px-2">{member.name}</h3>
+            <p className="text-primary/60 text-sm truncate px-2">{member.position}</p>
+            <span className={`inline-block mt-2 px-3 py-1 text-xs font-bold rounded-full ${member.role_type === 'OPERASIONAL' ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'}`}>{member.role_type_display}</span>
+            <div className="flex justify-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => onEdit(member)} className="px-3 py-1 text-sm text-primary/40 hover:text-primary">Edit</button>
+                <button onClick={() => onDelete(member.id)} className="px-3 py-1 text-sm text-red-400 hover:text-red-600">Delete</button>
+            </div>
+        </div>
+    );
+}
 
 export default function AdminTeamPage() {
     const [members, setMembers] = useState<BackendTeamMember[]>([]);
@@ -24,6 +88,36 @@ export default function AdminTeamPage() {
     const [photoFile, setPhotoFile] = useState<File | null>(null);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    async function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+
+        if (over && active.id !== over.id) {
+            const oldIndex = members.findIndex((m) => m.id === active.id);
+            const newIndex = members.findIndex((m) => m.id === over.id);
+            
+            const newItems = arrayMove(members, oldIndex, newIndex);
+            setMembers(newItems);
+
+            try {
+                await api.content.reorderTeamMembers(newItems.map(i => i.id));
+            } catch (error) {
+                console.error("Failed to reorder:", error);
+                fetchData();
+            }
+        }
+    }
 
     useEffect(() => { fetchData(); }, []);
 
@@ -114,20 +208,26 @@ export default function AdminTeamPage() {
                 ) : members.length === 0 ? (
                     <div className="col-span-full bg-white rounded-2xl p-12 text-center text-primary/40">Belum ada anggota tim.</div>
                 ) : (
-                    members.map((member) => (
-                        <div key={member.id} className="bg-white rounded-2xl p-6 text-center hover:shadow-lg transition-all group">
-                            <div className="relative w-24 h-24 rounded-full overflow-hidden mx-auto mb-4">
-                                <Image src={member.photo} alt={member.name} fill className="object-cover" sizes="96px" />
-                            </div>
-                            <h3 className="font-bold text-primary">{member.name}</h3>
-                            <p className="text-primary/60 text-sm">{member.position}</p>
-                            <span className={`inline-block mt-2 px-3 py-1 text-xs font-bold rounded-full ${member.role_type === 'OPERASIONAL' ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'}`}>{member.role_type_display}</span>
-                            <div className="flex justify-center gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button onClick={() => openModal(member)} className="px-3 py-1 text-sm text-primary/40 hover:text-primary">Edit</button>
-                                <button onClick={() => handleDelete(member.id)} className="px-3 py-1 text-sm text-red-400 hover:text-red-600">Delete</button>
-                            </div>
-                        </div>
-                    ))
+                    <DndContext 
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                    >
+                        <SortableContext 
+                            items={members.map(m => m.id)}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            {members.map((member) => (
+                                <SortableMember 
+                                    key={member.id} 
+                                    id={member.id} 
+                                    member={member} 
+                                    onEdit={openModal} 
+                                    onDelete={handleDelete} 
+                                />
+                            ))}
+                        </SortableContext>
+                    </DndContext>
                 )}
             </div>
 

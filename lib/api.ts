@@ -319,6 +319,10 @@ export const api = {
     content: {
         // Programs
         programs: () => fetcher<PaginatedResponse<BackendProgram>>('/content/programs/'),
+        reorderPrograms: (ids: string[]) => fetcher<any>('/content/programs/reorder/', {
+            method: 'POST',
+            body: JSON.stringify({ ids }),
+        }),
         
         // Site Settings (Global)
         settings: () => fetcher<BackendSiteSettings>('/content/settings/'),
@@ -336,6 +340,10 @@ export const api = {
             method: 'PATCH',
             body: data,
         }),
+        reorderTestimonials: (ids: string[]) => fetcher<any>('/content/testimonials/reorder/', {
+            method: 'POST',
+            body: JSON.stringify({ ids }),
+        }),
         deleteTestimonial: (id: string) => fetcher<any>(`/content/testimonials/${id}/`, { method: 'DELETE' }),
         
         // Partners
@@ -347,6 +355,10 @@ export const api = {
         updatePartner: (id: string, data: FormData) => fetcher<BackendPartner>(`/content/partners/${id}/`, {
             method: 'PATCH',
             body: data,
+        }),
+        reorderPartners: (ids: string[]) => fetcher<any>('/content/partners/reorder/', {
+            method: 'POST',
+            body: JSON.stringify({ ids }),
         }),
         deletePartner: (id: string) => fetcher<any>(`/content/partners/${id}/`, { method: 'DELETE' }),
         
@@ -360,6 +372,10 @@ export const api = {
             method: 'PATCH',
             body: data,
         }),
+        reorderFacilities: (ids: string[]) => fetcher<any>('/content/facilities/reorder/', {
+            method: 'POST',
+            body: JSON.stringify({ ids }),
+        }),
         deleteFacility: (id: string) => fetcher<any>(`/content/facilities/${id}/`, { method: 'DELETE' }),
         
         // Team
@@ -371,6 +387,10 @@ export const api = {
         updateTeamMember: (id: string, data: FormData) => fetcher<BackendTeamMember>(`/content/team/${id}/`, {
             method: 'PATCH',
             body: data,
+        }),
+        reorderTeamMembers: (ids: string[]) => fetcher<any>('/content/team/reorder/', {
+            method: 'POST',
+            body: JSON.stringify({ ids }),
         }),
         deleteTeamMember: (id: string) => fetcher<any>(`/content/team/${id}/`, { method: 'DELETE' }),
         

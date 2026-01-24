@@ -3,6 +3,24 @@
 import { useState, useEffect, useRef } from "react";
 import { api, BackendFacility } from "@/lib/api";
 import Image from "next/image";
+import {
+    DndContext, 
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent
+    } from '@dnd-kit/core';
+    import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+    useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
 
 /**
  * Admin Facilities Page - Kelola fasilitas (Ruangan, Modul, Media Kit, Robot)
@@ -14,6 +32,54 @@ const categories = [
     { value: "MEDIA_KIT", label: "Media Kit" },
     { value: "ROBOT", label: "Robot" },
 ];
+
+function SortableItem({ id, facility, onEdit, onDelete }: { id: string, facility: BackendFacility, onEdit: any, onDelete: any }) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging
+    } = useSortable({ id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 50 : 'auto',
+        opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+        <div 
+            ref={setNodeRef} 
+            style={style} 
+            className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all group relative border border-transparent hover:border-secondary/20"
+        >
+            <div className="relative h-48">
+                <Image src={facility.image} alt={facility.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
+                <div className="absolute top-4 left-4"><span className="px-3 py-1 bg-secondary text-white text-xs font-bold rounded-full">{facility.category_display}</span></div>
+                
+                {/* Drag Handle */}
+                <button 
+                    {...attributes} 
+                    {...listeners}
+                    className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-lg text-primary/40 hover:text-primary cursor-grab active:cursor-grabbing shadow-sm"
+                >
+                    <GripVertical className="w-4 h-4" />
+                </button>
+            </div>
+            <div className="p-6">
+                <h3 className="font-bold text-primary mb-2">{facility.title}</h3>
+                <p className="text-primary/60 text-sm line-clamp-2">{facility.description}</p>
+                <div className="flex gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => onEdit(facility)} className="p-2 text-primary/40 hover:text-primary bg-gray-50 rounded-lg text-sm">Edit</button>
+                    <button onClick={() => onDelete(facility.id)} className="p-2 text-red-400 hover:text-red-600 bg-gray-50 rounded-lg text-sm">Delete</button>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 export default function AdminFacilitiesPage() {
     const [facilities, setFacilities] = useState<BackendFacility[]>([]);
@@ -27,6 +93,36 @@ export default function AdminFacilitiesPage() {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8, // Avoid accidental drags when clicking edit/delete
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    async function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+
+        if (over && active.id !== over.id) {
+            const oldIndex = facilities.findIndex((f) => f.id === active.id);
+            const newIndex = facilities.findIndex((f) => f.id === over.id);
+            
+            const newItems = arrayMove(facilities, oldIndex, newIndex);
+            setFacilities(newItems);
+
+            try {
+                await api.content.reorderFacilities(newItems.map(i => i.id));
+            } catch (error) {
+                console.error("Failed to reorder:", error);
+                fetchData(); // Reset on failure
+            }
+        }
+    }
 
     useEffect(() => { fetchData(); }, [activeCategory]);
 
@@ -126,22 +222,26 @@ export default function AdminFacilitiesPage() {
                 ) : facilities.length === 0 ? (
                     <div className="col-span-full bg-white rounded-2xl p-12 text-center text-primary/40">Belum ada fasilitas.</div>
                 ) : (
-                    facilities.map((facility) => (
-                        <div key={facility.id} className="bg-white rounded-2xl overflow-hidden hover:shadow-lg transition-all group">
-                            <div className="relative h-48">
-                                <Image src={facility.image} alt={facility.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
-                                <div className="absolute top-4 left-4"><span className="px-3 py-1 bg-secondary text-white text-xs font-bold rounded-full">{facility.category_display}</span></div>
-                            </div>
-                            <div className="p-6">
-                                <h3 className="font-bold text-primary mb-2">{facility.title}</h3>
-                                <p className="text-primary/60 text-sm line-clamp-2">{facility.description}</p>
-                                <div className="flex gap-2 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button onClick={() => openModal(facility)} className="p-2 text-primary/40 hover:text-primary bg-gray-50 rounded-lg text-sm">Edit</button>
-                                    <button onClick={() => handleDelete(facility.id)} className="p-2 text-red-400 hover:text-red-600 bg-gray-50 rounded-lg text-sm">Delete</button>
-                                </div>
-                            </div>
-                        </div>
-                    ))
+                    <DndContext 
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                    >
+                        <SortableContext 
+                            items={facilities.map(f => f.id)}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            {facilities.map((facility) => (
+                                <SortableItem 
+                                    key={facility.id} 
+                                    id={facility.id} 
+                                    facility={facility} 
+                                    onEdit={openModal} 
+                                    onDelete={handleDelete} 
+                                />
+                            ))}
+                        </SortableContext>
+                    </DndContext>
                 )}
             </div>
 

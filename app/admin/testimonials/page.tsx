@@ -3,6 +3,24 @@
 import { useState, useEffect, useRef } from "react";
 import { api, BackendTestimonial } from "@/lib/api";
 import Image from "next/image";
+import {
+    DndContext, 
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+    useSortable
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
 
 /**
  * Admin Testimonials Page
@@ -10,6 +28,64 @@ import Image from "next/image";
  * CRUD lengkap untuk mengelola testimoni siswa.
  * Form fields: name, role, quote, photo
  */
+
+function SortableRow({ id, item, onEdit, onDelete }: { id: string, item: BackendTestimonial, onEdit: any, onDelete: any }) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging
+    } = useSortable({ id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 50 : 'auto',
+        opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+        <tr ref={setNodeRef} style={style} className="hover:bg-gray-50 group">
+            <td className="px-6 py-4">
+                <div className="flex items-center gap-3">
+                    <button 
+                        {...attributes} 
+                        {...listeners}
+                        className="p-1 text-primary/10 hover:text-primary cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                        <GripVertical className="w-4 h-4" />
+                    </button>
+                    {item.photo ? (
+                        <div className="w-12 h-12 rounded-full overflow-hidden relative border border-gray-100">
+                            <Image src={item.photo} alt={item.name} fill className="object-cover" sizes="48px" />
+                        </div>
+                    ) : (
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                            {item.name.substring(0, 2).toUpperCase()}
+                        </div>
+                    )}
+                </div>
+            </td>
+            <td className="px-6 py-4 font-bold text-primary">{item.name}</td>
+            <td className="px-6 py-4 text-primary/60">{item.role}</td>
+            <td className="px-6 py-4 text-primary/60 max-w-xs truncate italic">"{item.quote}"</td>
+            <td className="px-6 py-4 text-right">
+                <button onClick={() => onEdit(item)} className="text-primary/40 hover:text-primary mr-4">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </button>
+                <button onClick={() => onDelete(item.id)} className="text-red-400 hover:text-red-600">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+            </td>
+        </tr>
+    );
+}
 
 export default function AdminTestimonialsPage() {
     const [testimonials, setTestimonials] = useState<BackendTestimonial[]>([]);
@@ -27,6 +103,36 @@ export default function AdminTestimonialsPage() {
     const [photoFile, setPhotoFile] = useState<File | null>(null);
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    async function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event;
+
+        if (over && active.id !== over.id) {
+            const oldIndex = testimonials.findIndex((t) => t.id === active.id);
+            const newIndex = testimonials.findIndex((t) => t.id === over.id);
+            
+            const newItems = arrayMove(testimonials, oldIndex, newIndex);
+            setTestimonials(newItems);
+
+            try {
+                await api.content.reorderTestimonials(newItems.map(i => i.id));
+            } catch (error) {
+                console.error("Failed to reorder:", error);
+                fetchData();
+            }
+        }
+    }
 
     useEffect(() => {
         fetchData();
@@ -166,36 +272,26 @@ export default function AdminTestimonialsPage() {
                                 </td>
                             </tr>
                         ) : (
-                            testimonials.map((item) => (
-                                <tr key={item.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4">
-                                        {item.photo ? (
-                                            <div className="w-12 h-12 rounded-full overflow-hidden relative">
-                                                <Image src={item.photo} alt={item.name} fill className="object-cover" sizes="48px" />
-                                            </div>
-                                        ) : (
-                                            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                                                {item.name.substring(0, 2).toUpperCase()}
-                                            </div>
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 font-bold text-primary">{item.name}</td>
-                                    <td className="px-6 py-4 text-primary/60">{item.role}</td>
-                                    <td className="px-6 py-4 text-primary/60 max-w-xs truncate">"{item.quote}"</td>
-                                    <td className="px-6 py-4 text-right">
-                                        <button onClick={() => openModal(item)} className="text-primary/40 hover:text-primary mr-4">
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </button>
-                                        <button onClick={() => handleDelete(item.id)} className="text-red-400 hover:text-red-600">
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
+                            <DndContext 
+                                sensors={sensors}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleDragEnd}
+                            >
+                                <SortableContext 
+                                    items={testimonials.map(t => t.id)}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    {testimonials.map((item) => (
+                                        <SortableRow 
+                                            key={item.id} 
+                                            id={item.id} 
+                                            item={item} 
+                                            onEdit={openModal} 
+                                            onDelete={handleDelete} 
+                                        />
+                                    ))}
+                                </SortableContext>
+                            </DndContext>
                         )}
                     </tbody>
                 </table>

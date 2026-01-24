@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api, BackendProject, BackendAchievement } from "@/lib/api";
+import { useEffect, useState, useMemo } from "react";
+import { api, BackendProject} from "@/lib/api";
 import Link from "next/link";
+import { 
+    XAxis, YAxis, CartesianGrid, 
+    Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell
+} from 'recharts';
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState({
@@ -64,6 +68,44 @@ export default function AdminDashboard() {
 
         loadDashboardData();
     }, []);
+
+    const chartData = useMemo(() => {
+        if (!recentProjects.length) return { monthly: [], category: [] };
+
+        // 1. Monthly Trends (last 6 months)
+        const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+        const monthlySubmissions: Record<string, number> = {};
+        
+        // Initialize last 6 months
+        const today = new Date();
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+            monthlySubmissions[`${months[d.getMonth()]} ${d.getFullYear().toString().slice(-2)}`] = 0;
+        }
+
+        // Fill data from projects
+        recentProjects.forEach(p => {
+            const d = new Date(p.created_at);
+            const key = `${months[d.getMonth()]} ${d.getFullYear().toString().slice(-2)}`;
+            if (monthlySubmissions[key] !== undefined) {
+                monthlySubmissions[key]++;
+            }
+        });
+
+        const monthly = Object.entries(monthlySubmissions).map(([name, total]) => ({ name, total }));
+
+        // 2. Category Share (based on total likes)
+        const categoryLikes: Record<string, number> = {};
+        recentProjects.forEach(p => {
+            categoryLikes[p.category_name] = (categoryLikes[p.category_name] || 0) + p.likes_count;
+        });
+
+        const category = Object.entries(categoryLikes).map(([name, value]) => ({ name, value }));
+
+        return { monthly, category };
+    }, [recentProjects]);
+
+    const COLORS = ['#255d74', '#ff4d30', '#fbbf24', '#10b981', '#6366f1', '#f472b6'];
 
     const statCards = [
         { 
@@ -186,6 +228,70 @@ export default function AdminDashboard() {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100">
+                    <div className="flex justify-between items-center mb-8">
+                        <h3 className="text-xl font-bold text-primary">Submission Trends</h3>
+                        <span className="text-xs font-bold text-primary/40 uppercase tracking-widest">Last 6 Months</span>
+                    </div>
+                    <div className="h-[300px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={chartData.monthly}>
+                                <defs>
+                                    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#255d74" stopOpacity={0.1}/>
+                                        <stop offset="95%" stopColor="#255d74" stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} dy={10} />
+                                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12}} />
+                                <Tooltip 
+                                    contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                                />
+                                <Area type="monotone" dataKey="total" stroke="#255d74" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                <div className="bg-white p-8 rounded-[3rem] shadow-sm border border-gray-100">
+                    <div className="flex justify-between items-center mb-8">
+                        <h3 className="text-xl font-bold text-primary">Likes by Category</h3>
+                        <span className="text-xs font-bold text-primary/40 uppercase tracking-widest">Popularity</span>
+                    </div>
+                    <div className="h-[300px] w-full flex items-center">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={chartData.category}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={60}
+                                    outerRadius={100}
+                                    paddingAngle={5}
+                                    dataKey="value"
+                                >
+                                    {chartData.category.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                            </PieChart>
+                        </ResponsiveContainer>
+                        <div className="w-1/3 space-y-2">
+                            {chartData.category.map((entry, index) => (
+                                <div key={index} className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                                    <span className="text-xs font-bold text-primary/60 truncate">{entry.name}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Main Content Area */}
