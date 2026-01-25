@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, BackendFacility } from "@/lib/api";
+import Skeleton, { ImageSkeleton } from "@/components/ui/Skeleton";
 
 /**
  * Fasilitas Page
@@ -119,8 +120,21 @@ export default function FasilitasPage() {
             <section id="facilities" className="py-16 bg-white">
                 <div className="max-w-7xl mx-auto px-6">
                     {loading ? (
-                         <div className="flex justify-center h-40 items-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                        <div className="space-y-8">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className={`flex flex-col ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 lg:gap-16 p-8 lg:p-12 border-4 border-gray-100 rounded-3xl bg-gray-50/10`}>
+                                    <ImageSkeleton className="lg:w-1/2 aspect-video rounded-2xl" />
+                                    <div className="lg:w-1/2 flex flex-col justify-center space-y-4">
+                                        <Skeleton className="h-4 w-24" />
+                                        <Skeleton className="h-8 w-3/4" />
+                                        <div className="space-y-2">
+                                            <Skeleton className="h-4 w-full" />
+                                            <Skeleton className="h-4 w-full" />
+                                            <Skeleton className="h-4 w-2/3" />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     ) : facilities.length === 0 ? (
                         <div className="text-center py-20 text-gray-400">

@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { api, BackendProject} from "@/lib/api";
+import { api, BackendProject, BackendAchievement } from "@/lib/api";
 import Link from "next/link";
+import Skeleton from "@/components/ui/Skeleton";
 import { 
-    XAxis, YAxis, CartesianGrid, 
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, 
     Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell
 } from 'recharts';
 
@@ -183,7 +184,7 @@ export default function AdminDashboard() {
             value: stats.totalTeam, 
             icon: (
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                 </svg>
             ), 
             color: "bg-orange-500" 
@@ -224,7 +225,11 @@ export default function AdminDashboard() {
                         </div>
                         <div>
                             <p className="text-primary/40 text-[10px] font-bold uppercase tracking-widest">{stat.name}</p>
-                            <h3 className="text-3xl font-black text-primary leading-none mt-1">{isLoading ? "..." : stat.value}</h3>
+                            {isLoading ? (
+                                <Skeleton className="h-9 w-12 mt-1" />
+                            ) : (
+                                <h3 className="text-3xl font-black text-primary leading-none mt-1">{stat.value}</h3>
+                            )}
                         </div>
                     </div>
                 ))}
@@ -313,10 +318,19 @@ export default function AdminDashboard() {
                             </thead>
                             <tbody className="divide-y divide-gray-50">
                                 {isLoading ? (
-                                    [1, 2, 3].map(n => (
+                                    [1, 2, 3, 4, 5].map(n => (
                                         <tr key={n}>
-                                            <td colSpan={4} className="px-10 py-6 animate-pulse">
-                                                <div className="h-4 bg-gray-100 rounded-full w-3/4" />
+                                            <td className="px-10 py-6">
+                                                <div className="flex items-center gap-4">
+                                                    <Skeleton className="w-10 h-10 rounded-lg" />
+                                                    <Skeleton className="h-4 w-32" />
+                                                </div>
+                                            </td>
+                                            <td className="px-10 py-6">
+                                                <Skeleton className="h-4 w-24" />
+                                            </td>
+                                            <td className="px-10 py-6">
+                                                <Skeleton className="h-4 w-16 ml-auto" />
                                             </td>
                                         </tr>
                                     ))

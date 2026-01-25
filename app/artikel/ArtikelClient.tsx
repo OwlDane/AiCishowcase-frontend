@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, BackendArticle } from "@/lib/api";
+import Skeleton, { ImageSkeleton } from "@/components/ui/Skeleton";
 
 /**
  * Artikel Page
@@ -93,8 +94,21 @@ export default function ArtikelPage() {
             <section id="articles-grid" className="py-16 bg-gray-50 min-h-[50vh]">
                 <div className="max-w-7xl mx-auto px-6">
                     {loading ? (
-                        <div className="flex justify-center h-40 items-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[...Array(6)].map((_, i) => (
+                                <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col h-full">
+                                    <ImageSkeleton className="aspect-video" />
+                                    <div className="p-6 space-y-4 flex-1">
+                                        <Skeleton className="h-3 w-24" />
+                                        <Skeleton className="h-6 w-3/4" />
+                                        <div className="space-y-2">
+                                            <Skeleton className="h-4 w-full" />
+                                            <Skeleton className="h-4 w-5/6" />
+                                        </div>
+                                        <Skeleton className="h-4 w-24 mt-auto" />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     ) : articles.length === 0 ? (
                         <div className="text-center py-20 text-gray-400">

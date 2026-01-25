@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { api, BackendTeamMember } from "@/lib/api";
 import Image from "next/image";
+import Skeleton from "@/components/ui/Skeleton";
 import {
     DndContext, 
     closestCenter,
@@ -204,7 +205,16 @@ export default function AdminTeamPage() {
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {loading ? (
-                    [...Array(4)].map((_, i) => <div key={i} className="bg-white rounded-2xl p-6 animate-pulse text-center"><div className="w-24 h-24 rounded-full bg-gray-100 mx-auto mb-4" /><div className="h-4 bg-gray-100 rounded w-3/4 mx-auto mb-2" /><div className="h-3 bg-gray-100 rounded w-1/2 mx-auto" /></div>)
+                    [...Array(8)].map((_, i) => (
+                        <div key={i} className="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 space-y-4">
+                            <Skeleton className="w-24 h-24 rounded-full mx-auto" />
+                            <div className="space-y-2">
+                                <Skeleton className="h-5 w-3/4 mx-auto" />
+                                <Skeleton className="h-4 w-1/2 mx-auto" />
+                            </div>
+                            <Skeleton className="h-6 w-20 rounded-full mx-auto" />
+                        </div>
+                    ))
                 ) : members.length === 0 ? (
                     <div className="col-span-full bg-white rounded-2xl p-12 text-center text-primary/40">Belum ada anggota tim.</div>
                 ) : (

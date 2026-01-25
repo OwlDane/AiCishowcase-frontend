@@ -6,6 +6,7 @@ import MapSection from "@/components/MapSection";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { api, BackendGalleryImage } from "@/lib/api";
+import { ImageSkeleton } from "@/components/ui/Skeleton";
 
 /**
  * Galeri Page
@@ -107,8 +108,10 @@ export default function GaleriPage() {
             <section className="py-16 bg-white">
                 <div className="max-w-7xl mx-auto px-6">
                     {loading && images.length === 0 ? (
-                         <div className="flex justify-center h-40 items-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {[...Array(6)].map((_, i) => (
+                                <ImageSkeleton key={i} className="aspect-video rounded-2xl shadow-sm" />
+                            ))}
                         </div>
                     ) : images.length === 0 ? (
                         <div className="text-center py-20 text-gray-400">

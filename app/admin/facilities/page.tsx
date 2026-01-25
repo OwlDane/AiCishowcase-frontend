@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { api, BackendFacility } from "@/lib/api";
 import Image from "next/image";
+import Skeleton, { ImageSkeleton } from "@/components/ui/Skeleton";
 import {
     DndContext, 
     closestCenter,
@@ -218,7 +219,17 @@ export default function AdminFacilitiesPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loading ? (
-                    [...Array(3)].map((_, i) => <div key={i} className="bg-white rounded-2xl overflow-hidden animate-pulse"><div className="h-48 bg-gray-100" /><div className="p-6 space-y-2"><div className="h-4 bg-gray-100 rounded w-1/4" /><div className="h-6 bg-gray-100 rounded w-3/4" /></div></div>)
+                    [...Array(6)].map((_, i) => (
+                        <div key={i} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                            <ImageSkeleton className="h-48" />
+                            <div className="p-6 space-y-3">
+                                <Skeleton className="h-4 w-20" />
+                                <Skeleton className="h-6 w-3/4" />
+                                <Skeleton className="h-4 w-full" />
+                                <Skeleton className="h-4 w-2/3" />
+                            </div>
+                        </div>
+                    ))
                 ) : facilities.length === 0 ? (
                     <div className="col-span-full bg-white rounded-2xl p-12 text-center text-primary/40">Belum ada fasilitas.</div>
                 ) : (

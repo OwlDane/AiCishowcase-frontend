@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { api, BackendArticle } from "@/lib/api";
 import Image from "next/image";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import Skeleton from "@/components/ui/Skeleton";
 
 /**
  * Admin Articles Page - Kelola artikel/berita
@@ -142,7 +143,31 @@ export default function AdminArticlesPage() {
                     </thead>
                     <tbody className="divide-y divide-gray-50">
                         {loading ? (
-                            <tr><td colSpan={6} className="px-6 py-12 text-center text-primary/40">Loading...</td></tr>
+                            [...Array(5)].map((_, i) => (
+                                <tr key={i}>
+                                    <td className="px-6 py-4">
+                                        <Skeleton className="w-16 h-12 rounded-lg" />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="space-y-2">
+                                            <Skeleton className="h-5 w-48" />
+                                            <Skeleton className="h-3 w-32" />
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <Skeleton className="h-4 w-20" />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <Skeleton className="h-6 w-20 rounded-full" />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <Skeleton className="h-4 w-24" />
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <Skeleton className="h-5 w-16 ml-auto" />
+                                    </td>
+                                </tr>
+                            ))
                         ) : articles.length === 0 ? (
                             <tr><td colSpan={6} className="px-6 py-12 text-center text-primary/40">Belum ada artikel.</td></tr>
                         ) : (

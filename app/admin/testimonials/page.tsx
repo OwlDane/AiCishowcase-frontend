@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { api, BackendTestimonial } from "@/lib/api";
 import Image from "next/image";
+import Skeleton from "@/components/ui/Skeleton";
 import {
     DndContext, 
     closestCenter,
@@ -262,9 +263,25 @@ export default function AdminTestimonialsPage() {
                     </thead>
                     <tbody className="divide-y divide-gray-50">
                         {loading ? (
-                            <tr>
-                                <td colSpan={5} className="px-6 py-12 text-center text-primary/40">Loading...</td>
-                            </tr>
+                            [...Array(5)].map((_, i) => (
+                                <tr key={i}>
+                                    <td className="px-6 py-4">
+                                        <Skeleton className="w-12 h-12 rounded-full" />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <Skeleton className="h-5 w-32" />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <Skeleton className="h-4 w-24" />
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <Skeleton className="h-4 w-48" />
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <Skeleton className="h-5 w-16 ml-auto" />
+                                    </td>
+                                </tr>
+                            ))
                         ) : testimonials.length === 0 ? (
                             <tr>
                                 <td colSpan={5} className="px-6 py-12 text-center text-primary/40">
