@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Login Page
- * User authentication page
+ * Register Page
+ * User registration page
  */
 
 import { useState } from 'react';
@@ -11,41 +11,43 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '@/lib/hooks/use-auth';
-import { Eye, EyeOff, LogIn, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, UserPlus, Loader2 } from 'lucide-react';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+    name: z.string().min(3, 'Nama minimal 3 karakter'),
     email: z.string().email('Email tidak valid'),
-    password: z.string().min(6, 'Password minimal 6 karakter'),
-    remember: z.boolean().optional(),
+    password: z.string().min(8, 'Password minimal 8 karakter'),
+    password_confirmation: z.string(),
+}).refine((data) => data.password === data.password_confirmation, {
+    message: 'Password tidak cocok',
+    path: ['password_confirmation'],
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type RegisterFormData = z.infer<typeof registerSchema>;
 
-export default function LoginPage() {
-    const { login, isLoading } = useAuth();
+export default function RegisterPage() {
+    const { register: registerUser, isLoading } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
-        defaultValues: {
-            remember: false,
-        },
+    } = useForm<RegisterFormData>({
+        resolver: zodResolver(registerSchema),
     });
 
-    const onSubmit = (data: LoginFormData) => {
-        login(data);
+    const onSubmit = (data: RegisterFormData) => {
+        registerUser(data);
     };
 
     return (
         <div className="min-h-screen bg-linear-to-br from-[#eef2f5] via-white to-[#eef2f5] flex items-center justify-center p-6">
             {/* Background Decoration */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-20 left-10 w-72 h-72 bg-[#255d74]/5 rounded-full blur-3xl" />
-                <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+                <div className="absolute top-20 right-10 w-72 h-72 bg-secondary/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#255d74]/5 rounded-full blur-3xl" />
             </div>
 
             <div className="relative w-full max-w-md">
@@ -60,14 +62,34 @@ export default function LoginPage() {
                     </div>
                 </Link>
 
-                {/* Login Card */}
+                {/* Register Card */}
                 <div className="bg-white rounded-[2.5rem] p-10 shadow-xl border border-gray-100">
                     <div className="mb-8">
-                        <h2 className="text-2xl font-bold text-[#255d74] mb-2">Selamat Datang Kembali</h2>
-                        <p className="text-[#255d74]/60">Masuk ke akun Anda untuk melanjutkan</p>
+                        <h2 className="text-2xl font-bold text-[#255d74] mb-2">Daftar Akun Baru</h2>
+                        <p className="text-[#255d74]/60">Mulai perjalanan belajar AI & Robotika Anda</p>
                     </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                        {/* Name Field */}
+                        <div>
+                            <label className="block text-sm font-bold text-[#255d74]/80 mb-2">
+                                Nama Lengkap
+                            </label>
+                            <input
+                                type="text"
+                                {...register('name')}
+                                className={`w-full px-4 py-3 rounded-xl border-2 transition-all focus:outline-none ${errors.name
+                                        ? 'border-red-300 focus:border-red-500'
+                                        : 'border-gray-200 focus:border-[#255d74]'
+                                    }`}
+                                placeholder="John Doe"
+                                disabled={isLoading}
+                            />
+                            {errors.name && (
+                                <p className="mt-2 text-sm text-red-500">{errors.name.message}</p>
+                            )}
+                        </div>
+
                         {/* Email Field */}
                         <div>
                             <label className="block text-sm font-bold text-[#255d74]/80 mb-2">
@@ -117,30 +139,40 @@ export default function LoginPage() {
                             )}
                         </div>
 
-                        {/* Remember & Forgot Password */}
-                        <div className="flex items-center justify-between">
-                            <label className="flex items-center gap-2 cursor-pointer">
+                        {/* Confirm Password Field */}
+                        <div>
+                            <label className="block text-sm font-bold text-[#255d74]/80 mb-2">
+                                Konfirmasi Password
+                            </label>
+                            <div className="relative">
                                 <input
-                                    type="checkbox"
-                                    {...register('remember')}
-                                    className="w-4 h-4 rounded border-gray-300 text-[#255d74] focus:ring-[#255d74]"
+                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    {...register('password_confirmation')}
+                                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all focus:outline-none pr-12 ${errors.password_confirmation
+                                            ? 'border-red-300 focus:border-red-500'
+                                            : 'border-gray-200 focus:border-[#255d74]'
+                                        }`}
+                                    placeholder="••••••••"
                                     disabled={isLoading}
                                 />
-                                <span className="text-sm text-[#255d74]/60">Ingat saya</span>
-                            </label>
-                            <Link
-                                href="/forgot-password"
-                                className="text-sm text-secondary hover:underline font-medium"
-                            >
-                                Lupa password?
-                            </Link>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#255d74]/40 hover:text-[#255d74] transition-colors"
+                                >
+                                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                </button>
+                            </div>
+                            {errors.password_confirmation && (
+                                <p className="mt-2 text-sm text-red-500">{errors.password_confirmation.message}</p>
+                            )}
                         </div>
 
                         {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-[#255d74] text-white py-3 rounded-xl font-bold hover:bg-[#1e4a5f] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-[#255d74]/20"
+                            className="w-full bg-secondary text-white py-3 rounded-xl font-bold hover:bg-[#e63c1e] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-secondary/20 mt-6"
                         >
                             {isLoading ? (
                                 <>
@@ -149,19 +181,19 @@ export default function LoginPage() {
                                 </>
                             ) : (
                                 <>
-                                    <LogIn className="w-5 h-5" />
-                                    Masuk
+                                    <UserPlus className="w-5 h-5" />
+                                    Daftar Sekarang
                                 </>
                             )}
                         </button>
                     </form>
 
-                    {/* Register Link */}
+                    {/* Login Link */}
                     <div className="mt-8 text-center">
                         <p className="text-[#255d74]/60">
-                            Belum punya akun?{' '}
-                            <Link href="/register" className="text-secondary hover:underline font-bold">
-                                Daftar sekarang
+                            Sudah punya akun?{' '}
+                            <Link href="/login" className="text-[#255d74] hover:underline font-bold">
+                                Masuk di sini
                             </Link>
                         </p>
                     </div>

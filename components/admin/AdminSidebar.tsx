@@ -171,7 +171,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
                     </div>
                     {isOpen && (
                         <div className="flex flex-col animate-in fade-in slide-in-from-left-2 duration-300">
-                            <span className="text-primary font-bold text-sm truncate max-w-[140px]">{user ? user.username : "Administrator"}</span>
+                            <span className="text-primary font-bold text-sm truncate max-w-35">{user ? user.username : "Administrator"}</span>
                             <span className="text-primary/40 text-[10px] font-bold uppercase tracking-wider">Super Admin</span>
                         </div>
                     )}
