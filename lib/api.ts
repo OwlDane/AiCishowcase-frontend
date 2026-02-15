@@ -387,6 +387,14 @@ export const api = {
             // Attempts & Results
             attempts: (params?: string) => fetcher<PaginatedResponse<any>>(`/admin/placement-tests/attempts${params ? `?${params}` : ''}`),
         },
+        // Schedules Management
+        schedules: {
+            list: (params?: string) => fetcher<PaginatedResponse<any>>(`/admin/schedules${params ? `?${params}` : ''}`),
+            get: (id: string) => fetcher<any>(`/admin/schedules/${id}`),
+            create: (data: any) => fetcher<any>('/admin/schedules', { method: 'POST', body: JSON.stringify(data) }),
+            update: (id: string, data: any) => fetcher<any>(`/admin/schedules/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+            delete: (id: string) => fetcher<any>(`/admin/schedules/${id}`, { method: 'DELETE' }),
+        },
     },
     projects: {
         list: (params?: string) => fetcher<PaginatedResponse<BackendProject>>(`/showcase/projects/${params ? `?${params}` : ''}`),
