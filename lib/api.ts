@@ -395,6 +395,14 @@ export const api = {
             update: (id: string, data: any) => fetcher<any>(`/admin/schedules/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
             delete: (id: string) => fetcher<any>(`/admin/schedules/${id}`, { method: 'DELETE' }),
         },
+        // Analytics
+        analytics: {
+            overview: (dateRange?: string) => fetcher<any>(`/admin/analytics/overview${dateRange ? `?range=${dateRange}` : ''}`),
+            revenue: (params?: string) => fetcher<any>(`/admin/analytics/revenue${params ? `?${params}` : ''}`),
+            enrollments: (params?: string) => fetcher<any>(`/admin/analytics/enrollments${params ? `?${params}` : ''}`),
+            students: (params?: string) => fetcher<any>(`/admin/analytics/students${params ? `?${params}` : ''}`),
+            tests: (params?: string) => fetcher<any>(`/admin/analytics/tests${params ? `?${params}` : ''}`),
+        },
     },
     projects: {
         list: (params?: string) => fetcher<PaginatedResponse<BackendProject>>(`/showcase/projects/${params ? `?${params}` : ''}`),

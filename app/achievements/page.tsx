@@ -124,7 +124,7 @@ export default function AchievementsPage() {
                                 <motion.div
                                     layoutId={`card-${active.id}-${id}`}
                                     ref={ref}
-                                    className="w-full max-w-[600px] h-full md:h-fit md:max-h-[85%] flex flex-col bg-white rounded-[2.5rem] overflow-hidden shadow-2xl"
+                                    className="w-full max-w-150 h-full md:h-fit md:max-h-[85%] flex flex-col bg-white rounded-[2.5rem] overflow-hidden shadow-2xl"
                                 >
                                     <motion.div layoutId={`image-${active.id}-${id}`} className="relative h-72 md:h-80 w-full">
                                         <Image
